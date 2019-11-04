@@ -2,6 +2,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private keys: Map<string, Phaser.Input.Keyboard.Key>;
     private DEFAULT_SPEED: number = 0.1;
     private speed: number;
+    private xSpeed: number = 0;
     private accel: number;
     private grounded: boolean;
 
@@ -16,14 +17,22 @@ export class Player extends Phaser.GameObjects.Sprite {
     update(time: number, delta: number): void {
         this.y += this.speed * delta;
         this.speed += this.accel;
+        this.x += this.xSpeed;
+        this.xSpeed *= 0.49;
         if (this.keys.get("SPACE").isDown && this.grounded) {
             this.jump(1);
         }
         if (this.keys.get("LEFT").isDown) {
-            this.x -= 1;
+            this.xSpeed = -5;
         }
         if (this.keys.get("RIGHT").isDown) {
-            this.x += 1;
+            this.xSpeed = 5;
+        }
+        if (this.keys.get("A").isDown) {
+            console.log("Shoot left");
+        }
+        if (this.keys.get("D").isDown) {
+            console.log("Shoot right");
         }
     }
 

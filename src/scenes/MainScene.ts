@@ -19,7 +19,9 @@ export class MainScene extends Phaser.Scene {
         this.keys = new Map([
             ["LEFT", this.input.keyboard.addKey("LEFT")],
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
-            ["SPACE", this.input.keyboard.addKey("SPACE")] 
+            ["SPACE", this.input.keyboard.addKey("SPACE")],
+            ["A", this.input.keyboard.addKey("A")],
+            ["D", this.input.keyboard.addKey("D")],
         ]);
         this.movingBlockSpeed = 2;
     }
@@ -49,6 +51,7 @@ export class MainScene extends Phaser.Scene {
                 this.player.jump(0.5);
             }
         }
+        this.cameras.main.centerOn(this.player.x, this.player.y);
     }
 
     hitTop(playerBounds: Phaser.Geom.Rectangle, otherBounds: Phaser.Geom.Rectangle): boolean {
