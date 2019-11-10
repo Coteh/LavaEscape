@@ -1,4 +1,5 @@
 import { Player } from "../gameobjects/Player";
+import { Bullet } from "../gameobjects/Bullet";
 
 export class MainScene extends Phaser.Scene {
     private player: Player;
@@ -22,6 +23,8 @@ export class MainScene extends Phaser.Scene {
             ["SPACE", this.input.keyboard.addKey("SPACE")],
             ["A", this.input.keyboard.addKey("A")],
             ["D", this.input.keyboard.addKey("D")],
+            ["W", this.input.keyboard.addKey("W")],
+            ["S", this.input.keyboard.addKey("S")],
         ]);
         this.movingBlockSpeed = 2;
     }
@@ -52,6 +55,12 @@ export class MainScene extends Phaser.Scene {
             }
         }
         this.cameras.main.centerOn(this.player.x, this.player.y);
+        let playerBullets: Array<Bullet> = this.player.getBullets();
+        for (let i = 0; i < playerBullets.length; i++) {
+            if (this.hitTop(playerBullets[i].getBounds(), blockBounds) || this.hitTop(playerBullets[i].getBounds(), movingBlockBounds)) {
+                this.children.remove(playerBullets[i]);
+            }
+        }
     }
 
     hitTop(playerBounds: Phaser.Geom.Rectangle, otherBounds: Phaser.Geom.Rectangle): boolean {
