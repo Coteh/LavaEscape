@@ -1,10 +1,12 @@
 import { Player } from "../gameobjects/Player";
+import { Enemy } from "../gameobjects/Enemy";
 import { Bullet } from "../gameobjects/Bullet";
 
 export class MainScene extends Phaser.Scene {
     private player: Player;
     private block: Phaser.GameObjects.Shape;
     private movingBlock: Phaser.GameObjects.Shape;
+    private enemy: Enemy;
     private keys: Map<string,Phaser.Input.Keyboard.Key>;
 
     private movingBlockSpeed: number;
@@ -35,6 +37,7 @@ export class MainScene extends Phaser.Scene {
         this.movingBlock = new Phaser.GameObjects.Rectangle(this, 200, 400, 100, 20, 0xff0000, 1);
         this.add.existing(this.block);
         this.add.existing(this.movingBlock);
+        this.enemy = new Enemy(this, 400, 400, 100, 100);
     }
 
     update(time: number, delta: number): void {
@@ -58,6 +61,9 @@ export class MainScene extends Phaser.Scene {
         let playerBullets: Array<Bullet> = this.player.getBullets();
         for (let i = 0; i < playerBullets.length; i++) {
             if (this.hitTop(playerBullets[i].getBounds(), blockBounds) || this.hitTop(playerBullets[i].getBounds(), movingBlockBounds)) {
+                this.children.remove(playerBullets[i]);
+            }
+            if (this.enemy.hitBounds(playerBullets[i])) {
                 this.children.remove(playerBullets[i]);
             }
         }
