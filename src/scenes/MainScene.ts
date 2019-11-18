@@ -1,15 +1,14 @@
 import { Player } from "../gameobjects/Player";
 import { Enemy } from "../gameobjects/Enemy";
-import { Bullet } from "../gameobjects/Bullet";
+import { DebugManager } from "../managers/DebugManager";
 
 export class MainScene extends Phaser.Scene {
     private player: Player;
-    private block: Phaser.GameObjects.Shape;
-    private movingBlock: Phaser.GameObjects.Shape;
-    private enemy: Enemy;
+    private blocks: Phaser.GameObjects.Shape[];
     private keys: Map<string,Phaser.Input.Keyboard.Key>;
+    private debugManager: DebugManager;
 
-    private movingBlockSpeed: number;
+    private blockSpeeds: number[];
 
     constructor() {
         super({
@@ -23,50 +22,56 @@ export class MainScene extends Phaser.Scene {
             ["LEFT", this.input.keyboard.addKey("LEFT")],
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
             ["SPACE", this.input.keyboard.addKey("SPACE")],
-            ["A", this.input.keyboard.addKey("A")],
-            ["D", this.input.keyboard.addKey("D")],
-            ["W", this.input.keyboard.addKey("W")],
-            ["S", this.input.keyboard.addKey("S")],
         ]);
-        this.movingBlockSpeed = 2;
+    }
+
+    randomSpeed(): number {
+        return Math.random() * 5;
+    }
+
+    randomPosition(): number {
+        return Math.random() * 300 + 200;
     }
 
     create(): void {
         this.player = new Player(this, 300, 400, this.keys);
-        this.block = new Phaser.GameObjects.Rectangle(this, 200, 600, 500, 80, 0xff0000, 1);
-        this.movingBlock = new Phaser.GameObjects.Rectangle(this, 200, 400, 100, 20, 0xff0000, 1);
-        this.add.existing(this.block);
-        this.add.existing(this.movingBlock);
-        this.enemy = new Enemy(this, 400, 400, 100, 100);
+        this.blocks = [];
+        this.blockSpeeds = [];
+        this.blocks.push(new Phaser.GameObjects.Rectangle(this, 200, 600, 500, 80, 0xff0000, 1));
+        this.blockSpeeds.push(0);
+        var starting: number = 600;
+        for (let i = 0; i < 100; i++) {
+            this.blocks.push(new Phaser.GameObjects.Rectangle(this, this.randomPosition(), starting - (i * 200), 100, 20, 0xff0000, 1));
+            this.blockSpeeds.push(this.randomSpeed());
+        }
+        for (let i = 0; i < this.blocks.length; i++) {
+            this.add.existing(this.blocks[i]);
+        }
+        this.debugManager = new DebugManager(this);
+        this.debugManager.addKey("speed");
+        this.player.setDebugManager(this.debugManager);
     }
 
     update(time: number, delta: number): void {
+        var cam = this.cameras.main;
         this.player.update(time, delta);
-        this.movingBlock.x += this.movingBlockSpeed;
-        if (this.movingBlock.x < 100) {
-            this.movingBlockSpeed = -this.movingBlockSpeed;
-        } else if (this.movingBlock.x > 450) {
-            this.movingBlockSpeed = -this.movingBlockSpeed;
-        }
         var playerBounds = this.player.getBounds();
-        var blockBounds = this.block.getBounds();
-        var movingBlockBounds = this.movingBlock.getBounds();
-        if (this.hitTop(playerBounds, blockBounds) || this.hitTop(playerBounds, movingBlockBounds)) {
-            this.player.setGrounded(true);
-            if (!this.keys.get("SPACE").isDown) {
-                this.player.jump(0.5);
+        for (let i = 0; i < this.blocks.length; i++) {
+            this.blocks[i].x += this.blockSpeeds[i];
+            if (this.blocks[i].x < 100) {
+                this.blockSpeeds[i] = -this.blockSpeeds[i];
+            } else if (this.blocks[i].x > 450) {
+                this.blockSpeeds[i] = -this.blockSpeeds[i];
+            }
+            var blockBounds = this.blocks[i].getBounds();
+            if (this.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
+                this.player.setGrounded(true);
+                if (!this.keys.get("SPACE").isDown) {
+                    this.player.jump(0.5);
+                }
             }
         }
         this.cameras.main.centerOn(this.player.x, this.player.y);
-        let playerBullets: Array<Bullet> = this.player.getBullets();
-        for (let i = 0; i < playerBullets.length; i++) {
-            if (this.hitTop(playerBullets[i].getBounds(), blockBounds) || this.hitTop(playerBullets[i].getBounds(), movingBlockBounds)) {
-                this.children.remove(playerBullets[i]);
-            }
-            if (this.enemy.hitBounds(playerBullets[i])) {
-                this.children.remove(playerBullets[i]);
-            }
-        }
     }
 
     hitTop(playerBounds: Phaser.Geom.Rectangle, otherBounds: Phaser.Geom.Rectangle): boolean {
