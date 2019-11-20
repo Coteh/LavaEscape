@@ -37,13 +37,14 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.displayScore++;
         }
         this.displayText.setText(this.displayScore.toString());
-        this.debugManager.setText("speed", this.speed.toString());
+        this.debugManager.setText("yspeed", this.speed.toString());
+        this.debugManager.setText("xspeed", this.xSpeed.toString());
         this.speed += this.accel;
         this.x += this.xSpeed;
         this.xSpeed *= 0.49;
-        if (this.keys.get("SPACE").isDown && this.grounded) {
-            this.jump(1);
-        }
+        // if (this.keys.get("SPACE").isDown && this.grounded) {
+        //     this.jump(1);
+        // }
         if (this.keys.get("LEFT").isDown) {
             this.xSpeed = -5;
         }
@@ -65,6 +66,10 @@ export class Player extends Phaser.GameObjects.Sprite {
      */
     public setGrounded(condition: boolean) {
         this.grounded = condition;
+    }
+
+    public isGrounded(): boolean {
+        return this.grounded;
     }
 
     public getSpeed(): number {
