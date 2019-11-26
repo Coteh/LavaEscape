@@ -2,6 +2,8 @@ import { Player } from "../gameobjects/Player";
 import { Enemy } from "../gameobjects/Enemy";
 import { Block } from "../gameobjects/Block";
 import { DebugManager } from "../managers/DebugManager";
+import { RegularBlockComponent } from "../gameobjects/blocks/RegularBlockComponent";
+import { BrokenBlockComponent } from "../gameobjects/blocks/BrokenBlockComponent";
 
 export class MainScene extends Phaser.Scene {
     private player: Player;
@@ -38,22 +40,23 @@ export class MainScene extends Phaser.Scene {
     }
 
     create(): void {
-        this.player = new Player(this, 300, 400, this.keys);
+        this.player = new Player(this, 300, 500, this.keys);
         this.blocks = [];
         this.blockSpeeds = [];
-        this.blocks.push(new Block(this, 200, 600, 500, 80, 0xff0000, 0.5));
+        this.blocks.push(new Block(this, 200, 600, 500, 80, 0xff0000, 1, new RegularBlockComponent(this.player)));
         this.blockSpeeds.push(0);
         var starting: number = 600;
         for (let i = 0; i < 100; i++) {
-            var block: Block = new Block(this, this.randomPosition(), starting - (i * 200), 100, 20, 0xff0000, 1);
-
+            var block: Block = new Block(this, this.randomPosition(), starting - (i * 200), 100, 20, 0xff0000, 1, new RegularBlockComponent(this.player));
+            this.blocks.push(block);
+            var block: Block = new Block(this, this.randomPosition(), starting - (i * 250), 100, 20, 0x00ff00, 2, new BrokenBlockComponent(this.player));
             this.blocks.push(block);
             this.blockSpeeds.push(this.randomSpeed());
         }
         for (let i = 0; i < this.blocks.length; i++) {
             this.add.existing(this.blocks[i]);
         }
-        this.lava = new Phaser.GameObjects.Rectangle(this, 250, 1500, 1000, 500, 0xff0000, 1);
+        this.lava = new Phaser.GameObjects.Rectangle(this, 250, 1500, 2000, 500, 0xff0000, 1);
         this.add.existing(this.lava);
         this.debugManager = new DebugManager(this);
         this.debugManager.addKey("xspeed");
@@ -70,18 +73,21 @@ export class MainScene extends Phaser.Scene {
         for (let i = 0; i < this.blocks.length; i++) {
             this.blocks[i].x += this.blockSpeeds[i];
             if (this.blocks[i].x < 100) {
+                this.blocks[i].x = 100;
                 this.blockSpeeds[i] = -this.blockSpeeds[i];
             } else if (this.blocks[i].x > 450) {
+                this.blocks[i].x = 450;
                 this.blockSpeeds[i] = -this.blockSpeeds[i];
             }
             var blockBounds = this.blocks[i].getBounds();
             if (this.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
                 this.player.setGrounded(true);
-                if (!this.keys.get("SPACE").isDown) {
-                    this.player.jump(this.blocks[i].getJumpFactor());
-                } else if (this.player.isGrounded()) {
-                    this.player.jump(this.blocks[i].getJumpFactor() * 2);
-                }
+                // if (!this.keys.get("SPACE").isDown) {
+                //     this.player.jump(this.blocks[i].getJumpFactor());
+                // } else if (this.player.isGrounded()) {
+                //     this.player.jump(this.blocks[i].getJumpFactor() * 2);
+                // }
+                this.blocks[i].executeBlockHitEffect();
             }
         }
         var lavaBounds = this.lava.getBounds();
