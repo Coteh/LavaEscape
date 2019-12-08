@@ -10,8 +10,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     private grounded: boolean;
     private jumped: boolean;
     private score: number;
-    private displayScore: number;
-    private displayText: Phaser.GameObjects.Text;
 
     private debugManager: DebugManager;
 
@@ -22,21 +20,17 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.speed = this.DEFAULT_SPEED;
         this.accel = 0.00981;
         this.score = 0;
-        this.displayScore = 0;
-        this.displayText = this.scene.add.text(400, 0, "");
-        this.displayText.setScrollFactor(0);
     }
 
     update(time: number, delta: number): void {
         this.y += this.speed * delta;
+        // TODO separate score logic into main game manager, perhaps use observer pattern?
         var workingScore: number = -this.y + 500;
         if (this.speed > 0 && workingScore > this.score) {
             this.score = workingScore;
         }
-        if (this.displayScore < this.score) {
-            this.displayScore++;
-        }
-        this.displayText.setText(this.displayScore.toString());
+        this.scene.registry.set("score", this.score);
+        this.scene.events.emit("updateScore");
         this.debugManager.setText("yspeed", this.speed.toString());
         this.debugManager.setText("xspeed", this.xSpeed.toString());
         this.speed += this.accel;

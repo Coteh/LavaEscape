@@ -4,22 +4,34 @@ import { Block } from "../gameobjects/Block";
 import { DebugManager } from "../managers/DebugManager";
 import { RegularBlockComponent } from "../gameobjects/blocks/RegularBlockComponent";
 import { BrokenBlockComponent } from "../gameobjects/blocks/BrokenBlockComponent";
+import { CollideFuncs } from "../util/CollideFuncs";
+
+function playerCollide(player: Player, block: Block): void {
+    player.setGrounded(true);
+    // if (!this.keys.get("SPACE").isDown) {
+    //     this.player.jump(this.blocks[i].getJumpFactor());
+    // } else if (this.player.isGrounded()) {
+    //     this.player.jump(this.blocks[i].getJumpFactor() * 2);
+    // }
+    block.executeBlockHitEffect();
+}
 
 export class MainScene extends Phaser.Scene {
     private player: Player;
-    private blocks: Block[];
     private lava: Phaser.GameObjects.Rectangle;
+    private chunkStartPos: number;
+    private chunkHeight: number = 1200;
+    private blockChunks: Block[][];
 
     private keys: Map<string,Phaser.Input.Keyboard.Key>;
     
     private debugManager: DebugManager;
 
-    private blockSpeeds: number[];
-
     constructor() {
         super({
             key: "MainScene"
         });
+        this.blockChunks = [];
     }
 
     preload(): void {
@@ -39,23 +51,44 @@ export class MainScene extends Phaser.Scene {
         return Math.random() * 300 + 200;
     }
 
+    createChunk(starting: number) {
+        var blocks: Block[] = []
+        for (let i = 0; i < 10; i++) {
+            var block: Block = new Block(this, this.randomPosition(), starting - (i * 200), 100, 20, 0xff0000, 1, new RegularBlockComponent(this.player), this.randomSpeed());
+            block.setPlayerReference(this.player);
+            block.setPlayerCollideFunc(playerCollide);
+            blocks.push(block);
+            if (i % 2 == 0) {
+                var block: Block = new Block(this, this.randomPosition(), starting - (i * 250), 100, 20, 0x00ff00, 2, new BrokenBlockComponent(this.player), this.randomSpeed());
+                block.setPlayerReference(this.player);
+                block.setPlayerCollideFunc(playerCollide);
+                blocks.push(block);
+            }
+            var block: Block = new Block(this, this.randomPosition(), starting - (i * 300), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
+            block.setPlayerReference(this.player);
+            block.setPlayerCollideFunc(playerCollide);
+            blocks.push(block);
+        }
+        console.log(blocks.length)
+        for (let i = 0; i < blocks.length; i++) {
+            this.add.existing(blocks[i]);
+        }
+        this.blockChunks.push(blocks);
+        console.log("Chunk created at " + starting);
+    }
+
     create(): void {
+        this.scene.launch("HUDScene");
         this.player = new Player(this, 300, 500, this.keys);
-        this.blocks = [];
-        this.blockSpeeds = [];
-        this.blocks.push(new Block(this, 200, 600, 500, 80, 0xff0000, 1, new RegularBlockComponent(this.player)));
-        this.blockSpeeds.push(0);
-        var starting: number = 600;
-        for (let i = 0; i < 100; i++) {
-            var block: Block = new Block(this, this.randomPosition(), starting - (i * 200), 100, 20, 0xff0000, 1, new RegularBlockComponent(this.player));
-            this.blocks.push(block);
-            var block: Block = new Block(this, this.randomPosition(), starting - (i * 250), 100, 20, 0x00ff00, 2, new BrokenBlockComponent(this.player));
-            this.blocks.push(block);
-            this.blockSpeeds.push(this.randomSpeed());
-        }
-        for (let i = 0; i < this.blocks.length; i++) {
-            this.add.existing(this.blocks[i]);
-        }
+        var blocks: Block[] = [];
+        var block = new Block(this, 200, 600, 500, 80, 0xff0000, 1, new RegularBlockComponent(this.player), 0)
+        block.setPlayerReference(this.player);
+        block.setPlayerCollideFunc(playerCollide);
+        this.add.existing(block);
+        blocks.push(block);
+        this.blockChunks.push(blocks);
+        this.chunkStartPos = 400;
+        this.createChunk(this.chunkStartPos);
         this.lava = new Phaser.GameObjects.Rectangle(this, 250, 1500, 2000, 500, 0xff0000, 1);
         this.add.existing(this.lava);
         this.debugManager = new DebugManager(this);
@@ -69,29 +102,18 @@ export class MainScene extends Phaser.Scene {
     update(time: number, delta: number): void {
         var cam = this.cameras.main;
         this.player.update(time, delta);
-        var playerBounds = this.player.getBounds();
-        for (let i = 0; i < this.blocks.length; i++) {
-            this.blocks[i].x += this.blockSpeeds[i];
-            if (this.blocks[i].x < 100) {
-                this.blocks[i].x = 100;
-                this.blockSpeeds[i] = -this.blockSpeeds[i];
-            } else if (this.blocks[i].x > 450) {
-                this.blocks[i].x = 450;
-                this.blockSpeeds[i] = -this.blockSpeeds[i];
-            }
-            var blockBounds = this.blocks[i].getBounds();
-            if (this.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
-                this.player.setGrounded(true);
-                // if (!this.keys.get("SPACE").isDown) {
-                //     this.player.jump(this.blocks[i].getJumpFactor());
-                // } else if (this.player.isGrounded()) {
-                //     this.player.jump(this.blocks[i].getJumpFactor() * 2);
-                // }
-                this.blocks[i].executeBlockHitEffect();
-            }
+        this.blockChunks.forEach(blockChunk => {
+            blockChunk.forEach(block => {
+                block.update(time, delta);
+            });
+        });
+        if (this.player.y < this.chunkStartPos - this.chunkHeight) {
+            this.chunkStartPos -= this.chunkHeight + (this.chunkHeight / 2);
+            this.createChunk(this.chunkStartPos);
         }
+        var playerBounds = this.player.getBounds();
         var lavaBounds = this.lava.getBounds();
-        if (this.hitTop(playerBounds, lavaBounds)) {
+        if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
             this.player.setPosition(-300, -300);
         }
         var playerLava = (this.lava.y - this.player.y);
@@ -100,12 +122,5 @@ export class MainScene extends Phaser.Scene {
         this.debugManager.setText("lavaSpeedFactor", lavaSpeedFactor.toString());
         this.lava.y -= 0.3 * lavaSpeedFactor * delta;
         this.cameras.main.centerOn(this.player.x, this.player.y);
-    }
-
-    hitTop(playerBounds: Phaser.Geom.Rectangle, otherBounds: Phaser.Geom.Rectangle): boolean {
-        return playerBounds.centerY + playerBounds.height / 2 >= otherBounds.centerY - otherBounds.height / 2
-            && playerBounds.centerX + playerBounds.width / 2 >= otherBounds.centerX - otherBounds.width / 2
-            && playerBounds.centerX - playerBounds.width / 2 <= otherBounds.centerX + otherBounds.width / 2
-            && playerBounds.centerY - playerBounds.height / 2 <= otherBounds.centerY + otherBounds.height / 2
     }
 }
