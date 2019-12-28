@@ -1,8 +1,6 @@
 import { BlockComponent } from "./blocks/BlockComponent";
-import { RegularBlockComponent } from "./blocks/RegularBlockComponent";
 import { Player } from "./Player";
 import { CollideFuncs } from "../util/CollideFuncs";
-import { Rectangle } from "../types/Rectangle";
 
 export class Block extends Phaser.GameObjects.Rectangle {
     private jumpFactor: number;
@@ -10,6 +8,7 @@ export class Block extends Phaser.GameObjects.Rectangle {
     private speed: number;
     private player: Player;
     private playerCollideFunc: Function;
+    private playerGrounded: boolean;
 
     constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, fillColor: number, jumpFactor: number, component: BlockComponent, speed: number) {
         super(scene, x, y, width, height, fillColor, 1);
@@ -40,6 +39,9 @@ export class Block extends Phaser.GameObjects.Rectangle {
         var blockBounds = this.getBounds();
         if (CollideFuncs.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
             this.playerCollideFunc(this.player, this);
+            this.playerGrounded = true;
+        } else {
+            this.playerGrounded = false;
         }
     }
 
@@ -49,5 +51,13 @@ export class Block extends Phaser.GameObjects.Rectangle {
 
     public executeBlockHitEffect() {
         this.component.runEffect();
+    }
+
+    public hasPlayerGrounded() {
+        return this.playerGrounded;
+    }
+
+    public destroyBlock() {
+        this.destroy(true);
     }
 }

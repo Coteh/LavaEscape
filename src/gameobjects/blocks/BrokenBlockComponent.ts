@@ -7,6 +7,7 @@ export class BrokenBlockComponent extends BlockComponent {
     }
 
     public runEffect() {
-        this.block.destroy(true);
+        this.block.destroyBlock();
+        this.player.setGrounded(false);
     }
 }
