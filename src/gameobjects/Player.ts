@@ -91,7 +91,6 @@ export class Player extends Phaser.GameObjects.Sprite {
         if (this.held) {
             return;
         }
-        console.log(this.jumpFactor);
         this.speed = -0.5 * coefficient * this.jumpFactor;
         this.grounded = false;
         if (this.onJump !== undefined) {

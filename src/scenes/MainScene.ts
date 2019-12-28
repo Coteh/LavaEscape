@@ -11,6 +11,7 @@ import { Pickup } from "../gameobjects/Pickup";
 
 const SPEED_UP_TIME: number = 10000;
 const ENEMY_COOLDOWN_MAX: number = 1000;
+const MIN_ENEMY_MODULUS: number = 2;
 
 export class MainScene extends Phaser.Scene {
     private player: Player;
@@ -31,6 +32,7 @@ export class MainScene extends Phaser.Scene {
     private chunkFactory: AbstractChunkFactory;
     private enemyManager: EnemyManager;
 
+    private enemyModulus: number = 10;
     private enemyCooldown: number = 0;
     
     private pickups: Pickup[];
@@ -105,10 +107,14 @@ export class MainScene extends Phaser.Scene {
     onPickup() {
         this.lava.moveDown(200);
     }
+
+    willEnemySpawn(): boolean {
+        var rand = Math.round(Math.random() * this.enemyModulus);
+        return (rand % this.enemyModulus == this.enemyModulus / 2 && this.enemyCooldown == 0);
+    }
     
     onJump(player: Player) {
-        var rand = Math.round(Math.random());
-        if (rand % 2 == 0 && this.enemyCooldown == 0) {
+        if (this.willEnemySpawn()) {
             var enemy = this.enemyManager.spawnEnemy();
             this.enemies.push(enemy);
             this.enemyCooldown = 0.0001;
@@ -182,6 +188,7 @@ export class MainScene extends Phaser.Scene {
         this.debugManager.setText("lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
         if (time > this.speedUpTime) {
             this.lava.speedUp(this.lavaSpeedupFactor);
+            this.enemyModulus = (this.enemyModulus > MIN_ENEMY_MODULUS) ? this.enemyModulus - 2 : this.enemyModulus; // TODO have a separate speedup timer for enemy spawn likelihood increase
             console.log("Speed up!");
             this.speedUpTime += SPEED_UP_TIME;
             if (this.lavaSpeedupFactor > 100) {
