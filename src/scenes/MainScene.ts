@@ -4,7 +4,7 @@ import { Lava } from "../gameobjects/Lava";
 import { DebugManager } from "../managers/DebugManager";
 import { RegularBlockComponent } from "../gameobjects/blocks/RegularBlockComponent";
 import { CollideFuncs } from "../util/CollideFuncs";
-import { ChunkManager, ChunkResult } from "../managers/ChunkManager";
+import { AbstractChunkFactory, ChunkResult } from "../factory/chunks/AbstractChunkFactory";
 import { Enemy } from "../gameobjects/Enemy";
 import { EnemyManager } from "../managers/EnemyManager";
 import { Pickup } from "../gameobjects/Pickup";
@@ -28,7 +28,7 @@ export class MainScene extends Phaser.Scene {
     private keys: Map<string,Phaser.Input.Keyboard.Key>;
     
     private debugManager: DebugManager;
-    private chunkManager: ChunkManager;
+    private chunkFactory: AbstractChunkFactory;
     private enemyManager: EnemyManager;
 
     private enemyCooldown: number = 0;
@@ -62,7 +62,7 @@ export class MainScene extends Phaser.Scene {
         this.debugManager = new DebugManager(this);
         this.player = new Player(this, 300, 500, this.keys);
         this.player.setOnJump(this.onJump.bind(this));
-        this.chunkManager = new ChunkManager(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
+        this.chunkFactory = new AbstractChunkFactory(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
         // block "chunk" of just the bottom block
         var blocks: Block[] = [];
         var block = new Block(this, 200, 600, 500, 80, 0xff0000, 1, new RegularBlockComponent(this.player), 0)
@@ -72,7 +72,7 @@ export class MainScene extends Phaser.Scene {
         blocks.push(block);
         this.blockChunks.push(blocks);
         this.chunkStartPos = 400;
-        var chunk: ChunkResult = this.chunkManager.createChunk(this.chunkStartPos);
+        var chunk: ChunkResult = this.chunkFactory.createChunk(this.chunkStartPos);
         this.blockChunks.push(chunk.blocks);
         chunk.pickups.forEach((pickup) => {
             this.pickups.push(pickup);
@@ -138,7 +138,7 @@ export class MainScene extends Phaser.Scene {
         }
         if (this.player.y < this.chunkStartPos - this.chunkHeight) {
             this.chunkStartPos -= this.chunkHeight + (this.chunkHeight / 2);
-            var chunk: ChunkResult = this.chunkManager.createChunk(this.chunkStartPos);
+            var chunk: ChunkResult = this.chunkFactory.createChunk(this.chunkStartPos);
             this.blockChunks.push(chunk.blocks);
             chunk.pickups.forEach((pickup) => {
                 this.pickups.push(pickup);

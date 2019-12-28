@@ -12,7 +12,7 @@ export class EnemyManager {
     }
 
     randomSpeed() {
-        return Math.random() * 0.5 + 0.25;
+        return Math.random() * 0.3 + 0.25;
     }
 
     spawnEnemy(): Enemy {

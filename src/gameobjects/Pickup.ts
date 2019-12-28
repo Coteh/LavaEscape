@@ -3,7 +3,6 @@ export class Pickup extends Phaser.GameObjects.Sprite {
 
     constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, sprite: string, onPickup: Function) {
         super(scene, x, y, sprite);
-        this.scene.add.existing(this);
         this.onPickup = onPickup;
     }
 
