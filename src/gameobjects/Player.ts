@@ -1,4 +1,3 @@
-import { Vector } from "../types/Vector";
 import { DebugManager } from "../managers/DebugManager";
 
 const DEFAULT_JUMP_FACTOR = 1.0;

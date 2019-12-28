@@ -50,7 +50,6 @@ export class MainScene extends Phaser.Scene {
         this.keys = new Map([
             ["LEFT", this.input.keyboard.addKey("LEFT")],
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
-            ["DOWN", this.input.keyboard.addKey("DOWN")],
             ["SPACE", this.input.keyboard.addKey("SPACE")],
         ]);
         this.cKey = this.input.keyboard.addKey("C");
