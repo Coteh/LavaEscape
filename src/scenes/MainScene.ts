@@ -22,6 +22,7 @@ export class MainScene extends Phaser.Scene {
     private enemies: Enemy[];
     private lavaSpeedupFactor: number = 1000;
     private lavaSpeedDivisor: number = 4;
+    private elapsedTime: number = 0;
     private speedUpTime: number = SPEED_UP_TIME;
 
     private cKey: Phaser.Input.Keyboard.Key;
@@ -122,10 +123,11 @@ export class MainScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
+        this.elapsedTime += delta;
+
         this.debugManager.setText("grounded", this.player.isGrounded().toString());
         this.debugManager.setText("playerX", this.player.x.toString());
         this.debugManager.setText("playerY", this.player.y.toString());
-        var cam = this.cameras.main;
         this.player.update(time, delta);
         var playerGrounded: boolean = false;
         this.blockChunks.forEach(blockChunk => {
@@ -156,7 +158,7 @@ export class MainScene extends Phaser.Scene {
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
             this.scene.stop("MainScene");
         }
-
+        
         this.enemies.forEach((enemy) => {
             enemy.update(time, delta);
             var playerBounds = this.player.getBounds();
@@ -169,7 +171,7 @@ export class MainScene extends Phaser.Scene {
                 }
             }
         });
-
+        
         this.pickups.forEach((pickup) => {
             if (!pickup.active) {
                 return;
@@ -184,9 +186,11 @@ export class MainScene extends Phaser.Scene {
             }
         });
 
+        this.cameras.main.centerOn(this.player.x, this.player.y);
+        
         this.debugManager.setText("lavaSpeedupFactor", this.lavaSpeedupFactor.toString());
         this.debugManager.setText("lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
-        if (time > this.speedUpTime) {
+        if (this.elapsedTime > this.speedUpTime) {
             this.lava.speedUp(this.lavaSpeedupFactor);
             this.enemyModulus = (this.enemyModulus > MIN_ENEMY_MODULUS) ? this.enemyModulus - 2 : this.enemyModulus; // TODO have a separate speedup timer for enemy spawn likelihood increase
             console.log("Speed up!");
@@ -196,9 +200,7 @@ export class MainScene extends Phaser.Scene {
                 this.lavaSpeedDivisor *= 2.5;
             }
         }
-
-        this.cameras.main.centerOn(this.player.x, this.player.y);
-
+        
         if (this.input.keyboard.checkDown(this.cKey, 1000)) {
             // TODO insert anything you want to debug here, and remove this key before finishing
             this.lava.moveDown(200);

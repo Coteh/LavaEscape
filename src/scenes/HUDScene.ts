@@ -3,6 +3,8 @@ export class HUDScene extends Phaser.Scene {
     private score: number;
     private displayScore: number;
 
+    private pKey: Phaser.Input.Keyboard.Key;
+
     constructor() {
         super({
             key: "HUDScene"
@@ -18,6 +20,8 @@ export class HUDScene extends Phaser.Scene {
 
         var game: Phaser.Scene = this.scene.get("MainScene");
         game.events.on("updateScore", this.updateScore.bind(this));
+
+        this.pKey = this.input.keyboard.addKey("P");
     }
 
     updateScore(): void {
@@ -25,6 +29,14 @@ export class HUDScene extends Phaser.Scene {
     }
 
     update(): void {
+        if (this.input.keyboard.checkDown(this.pKey, 1000)) {
+            if (!this.scene.isPaused("MainScene")) {
+                this.scene.pause("MainScene");
+            } else {
+                this.scene.resume("MainScene");
+            }
+        }
+
         if (this.displayScore < this.score) {
             this.displayScore++;
         }
