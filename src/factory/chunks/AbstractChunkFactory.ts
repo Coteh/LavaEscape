@@ -2,7 +2,7 @@ import { Scene } from "phaser";
 import { Block } from "../../gameobjects/Block";
 import { Player } from "../../gameobjects/Player";
 import { Pickup } from "../../gameobjects/Pickup";
-import { EasyChunkFactory } from "./EasyChunkFactory";
+import { HardChunkFactory } from "./HardChunkFactory";
 import { NormalChunkFactory } from "./NormalChunkFactory";
 import { MovingChunkFactory } from "./MovingChunkFactory";
 
@@ -15,17 +15,20 @@ export interface ChunkFactory {
     createChunk(x: number, y: number): ChunkResult;
 }
 
+const HARD_CHUNKS_MIN: number = 5;
+
 export class AbstractChunkFactory {
     private scene: Scene;
+    private numberChunksCreated: number = 0;
 
     private chunkFactories: ChunkFactory[];
 
     constructor(scene: Scene, player: Player, playerCollisionFunc: Function, onPickupFunc: Function) {
         this.scene = scene;
         this.chunkFactories = [];
-        this.chunkFactories.push(new EasyChunkFactory(scene, player, playerCollisionFunc, onPickupFunc));
         this.chunkFactories.push(new NormalChunkFactory(scene, player, playerCollisionFunc, onPickupFunc));
         this.chunkFactories.push(new MovingChunkFactory(scene, player, playerCollisionFunc, onPickupFunc));
+        this.chunkFactories.push(new HardChunkFactory(scene, player, playerCollisionFunc, onPickupFunc));
     }
 
     randomPosition(): number {
@@ -40,8 +43,10 @@ export class AbstractChunkFactory {
                 result = this.chunkFactories[1].createChunk(x, y);
                 break;
             case 2:
-                result = this.chunkFactories[2].createChunk(x, y);
-                break;
+                if (this.numberChunksCreated > HARD_CHUNKS_MIN) {
+                    result = this.chunkFactories[2].createChunk(x, y);
+                    break;
+                }
             default:
                 result = this.chunkFactories[0].createChunk(x, y);
                 break;
@@ -52,6 +57,7 @@ export class AbstractChunkFactory {
         result.pickups.forEach(pickup => {
             this.scene.add.existing(pickup);
         });
+        this.numberChunksCreated++;
         return result;
     }
 }

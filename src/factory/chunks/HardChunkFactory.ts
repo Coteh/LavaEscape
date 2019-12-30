@@ -5,7 +5,7 @@ import { Scene } from "phaser";
 import { Player } from "../../gameobjects/Player";
 import { RegularBlockComponent } from "../../gameobjects/blocks/RegularBlockComponent";
 
-export class EasyChunkFactory {
+export class HardChunkFactory {
     private scene: Scene;
     private player: Player;
     private playerCollisionFunc: Function;
