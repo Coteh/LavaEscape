@@ -90,6 +90,7 @@ export class MainScene extends Phaser.Scene {
             this.pickups.push(pickup);
         });
         this.lava = new Lava(this, 1500, this.player, this.debugManager);
+        this.lava.depth = 500;
         this.add.existing(this.lava);
         this.debugManager.addKey("xspeed");
         this.debugManager.addKey("yspeed");
@@ -167,6 +168,7 @@ export class MainScene extends Phaser.Scene {
         var lavaBounds = this.lava.getBounds();
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
             this.scene.stop("MainScene");
+            this.events.emit("gameOver");
         }
 
         if (this.player.x - playerBounds.width / 2 < this.left) {

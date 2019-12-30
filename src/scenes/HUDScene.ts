@@ -24,6 +24,7 @@ export class HUDScene extends Phaser.Scene {
 
         var game: Phaser.Scene = this.scene.get("MainScene");
         game.events.on("updateScore", this.updateScore.bind(this));
+        game.events.on("gameOver", this.gameOver.bind(this));
 
         this.pKey = this.input.keyboard.addKey("P");
 
@@ -45,10 +46,16 @@ export class HUDScene extends Phaser.Scene {
             }
         }
 
-        if (this.displayScore < this.score) {
+        if (this.displayScore < this.score / 2) {
+            this.displayScore += 2;
+        } else if (this.displayScore < this.score) {
             this.displayScore++;
         }
         this.scoreText.setText(this.displayScore.toString());
+    }
+
+    gameOver(): void {
+        this.displayScore = Math.ceil(this.score);
     }
 
     pauseGame(): void {
