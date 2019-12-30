@@ -7,6 +7,7 @@ export class RegularBlockComponent extends BlockComponent {
     }
 
     public runEffect() {
+        this.player.lockOn(this.block);
         this.player.jump(this.block.getJumpFactor());
     }
 }

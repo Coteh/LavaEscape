@@ -9,6 +9,7 @@ export class Block extends Phaser.GameObjects.Rectangle {
     private player: Player;
     private playerCollideFunc: Function;
     private playerGrounded: boolean;
+    private deltaX: number = 0;
 
     constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, fillColor: number, jumpFactor: number, component: BlockComponent, speed: number) {
         super(scene, x, y, width, height, fillColor, 1);
@@ -27,6 +28,7 @@ export class Block extends Phaser.GameObjects.Rectangle {
     }
 
     public update(time: number, delta: number): void {
+        var oldX: number = this.x;
         this.x += this.speed;
         if (this.x < 100) {
             this.x = 100;
@@ -43,6 +45,11 @@ export class Block extends Phaser.GameObjects.Rectangle {
         } else {
             this.playerGrounded = false;
         }
+        this.deltaX = this.x - oldX;
+    }
+
+    public getDeltaX(): number {
+        return this.deltaX;
     }
 
     public getJumpFactor(): number {

@@ -12,7 +12,7 @@ export interface ChunkResult {
 }
 
 export interface ChunkFactory {
-    createChunk(starting: number): ChunkResult;
+    createChunk(x: number, y: number): ChunkResult;
 }
 
 export class AbstractChunkFactory {
@@ -32,18 +32,18 @@ export class AbstractChunkFactory {
         return Math.random() * 300 + 200;
     }
 
-    createChunk(starting: number): ChunkResult {
+    createChunk(x: number, y: number): ChunkResult {
         var rand: number = Math.round(Math.random() * 2);
         var result: ChunkResult;
         switch (rand) {
             case 1:
-                result = this.chunkFactories[1].createChunk(starting);
+                result = this.chunkFactories[1].createChunk(x, y);
                 break;
             case 2:
-                result = this.chunkFactories[2].createChunk(starting);
+                result = this.chunkFactories[2].createChunk(x, y);
                 break;
             default:
-                result = this.chunkFactories[0].createChunk(starting);
+                result = this.chunkFactories[0].createChunk(x, y);
                 break;
         }
         result.blocks.forEach(block => {

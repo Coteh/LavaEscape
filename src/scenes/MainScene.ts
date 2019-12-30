@@ -24,6 +24,9 @@ export class MainScene extends Phaser.Scene {
     private lavaSpeedDivisor: number = 4;
     private elapsedTime: number = 0;
     private speedUpTime: number = SPEED_UP_TIME;
+    private left: number;
+    private right: number;
+    private centerPos: number;
 
     private cKey: Phaser.Input.Keyboard.Key;
 
@@ -68,14 +71,20 @@ export class MainScene extends Phaser.Scene {
         this.chunkFactory = new AbstractChunkFactory(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
         // block "chunk" of just the bottom block
         var blocks: Block[] = [];
-        var block = new Block(this, 200, 600, 500, 80, 0xff0000, 1, new RegularBlockComponent(this.player), 0)
+        var block = new Block(this, 200, 600, 1000, 500, 0xfff000, 1, new RegularBlockComponent(this.player), 0)
         block.setPlayerReference(this.player);
         block.setPlayerCollideFunc(this.onPlatformHit.bind(this));
         this.add.existing(block);
         blocks.push(block);
         this.blockChunks.push(blocks);
-        this.chunkStartPos = 400;
-        var chunk: ChunkResult = this.chunkFactory.createChunk(this.chunkStartPos);
+        // make the center of this bottom block camera focus point
+        this.centerPos = block.getBounds().centerX;
+        this.cameras.main.centerOnX(this.centerPos);
+        // create first chunk
+        this.chunkStartPos = 200;
+        this.left = -200;
+        this.right = this.cameras.main.width + this.left;
+        var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
         this.blockChunks.push(chunk.blocks);
         chunk.pickups.forEach((pickup) => {
             this.pickups.push(pickup);
@@ -144,9 +153,10 @@ export class MainScene extends Phaser.Scene {
         if (!playerGrounded) {
             this.player.setGrounded(false);
         }
+
         if (this.player.y < this.chunkStartPos - this.chunkHeight) {
             this.chunkStartPos -= this.chunkHeight + (this.chunkHeight / 2);
-            var chunk: ChunkResult = this.chunkFactory.createChunk(this.chunkStartPos);
+            var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
             this.blockChunks.push(chunk.blocks);
             chunk.pickups.forEach((pickup) => {
                 this.pickups.push(pickup);
@@ -157,6 +167,12 @@ export class MainScene extends Phaser.Scene {
         var lavaBounds = this.lava.getBounds();
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
             this.scene.stop("MainScene");
+        }
+
+        if (this.player.x - playerBounds.width / 2 < this.left) {
+            this.player.x = this.left + playerBounds.width / 2;
+        } else if (this.player.x + playerBounds.width / 2 > this.right) {
+            this.player.x = this.right - playerBounds.width / 2;
         }
         
         this.enemies.forEach((enemy) => {
@@ -182,18 +198,16 @@ export class MainScene extends Phaser.Scene {
             if (CollideFuncs.hitBounds(playerBounds, pickupBounds)) {
                 pickup.activatePickup();
                 pickup.destroy(true);
-                console.log("Picked up!")
             }
         });
 
-        this.cameras.main.centerOn(this.player.x, this.player.y);
+        this.cameras.main.centerOnY(this.player.y);
         
         this.debugManager.setText("lavaSpeedupFactor", this.lavaSpeedupFactor.toString());
         this.debugManager.setText("lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
         if (this.elapsedTime > this.speedUpTime) {
             this.lava.speedUp(this.lavaSpeedupFactor);
             this.enemyModulus = (this.enemyModulus > MIN_ENEMY_MODULUS) ? this.enemyModulus - 2 : this.enemyModulus; // TODO have a separate speedup timer for enemy spawn likelihood increase
-            console.log("Speed up!");
             this.speedUpTime += SPEED_UP_TIME;
             if (this.lavaSpeedupFactor > 100) {
                 this.lavaSpeedupFactor /= this.lavaSpeedDivisor;

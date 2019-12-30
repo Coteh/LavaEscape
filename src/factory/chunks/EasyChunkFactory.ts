@@ -18,15 +18,15 @@ export class EasyChunkFactory {
         this.onPickupFunc = onPickupFunc;
     }
 
-    randomPosition(): number {
-        return Math.random() * 300 + 200;
+    randomOffset(): number {
+        return Math.random() * 800;
     }
     
-    createChunk(starting: number): ChunkResult {
+    createChunk(x: number, y: number): ChunkResult {
         var blocks: Block[] = [];
         var pickups: Pickup[] = [];
         for (let i = 0; i < 10; i++) {
-            var block: Block = new Block(this.scene, this.randomPosition(), starting - (i * 200), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
+            var block: Block = new Block(this.scene, x + this.randomOffset(), y - (i * 200), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);
@@ -36,12 +36,12 @@ export class EasyChunkFactory {
                 pickups.push(pickup);
             }
             // if (i % 2 == 0) {
-            //     var block: Block = new Block(this.scene, this.randomPosition(), starting - (i * 250), 100, 20, 0x00ff00, 2, new BrokenBlockComponent(this.player), 0);
+            //     var block: Block = new Block(this.scene, this.randomOffset(), starting - (i * 250), 100, 20, 0x00ff00, 2, new BrokenBlockComponent(this.player), 0);
             //     block.setPlayerReference(this.player);
             //     block.setPlayerCollideFunc(this.playerCollisionFunc);
             //     blocks.push(block);
             // }
-            var block: Block = new Block(this.scene, this.randomPosition(), starting - (i * 300), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
+            var block: Block = new Block(this.scene, x + this.randomOffset(), y - (i * 300), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);

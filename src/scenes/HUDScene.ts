@@ -1,9 +1,13 @@
+import { BaseButton } from "../gameobjects/buttons/BaseButton";
+
 export class HUDScene extends Phaser.Scene {
     private scoreText: Phaser.GameObjects.Text;
     private score: number;
     private displayScore: number;
 
     private pKey: Phaser.Input.Keyboard.Key;
+
+    private resumeButton: BaseButton;
 
     constructor() {
         super({
@@ -22,6 +26,10 @@ export class HUDScene extends Phaser.Scene {
         game.events.on("updateScore", this.updateScore.bind(this));
 
         this.pKey = this.input.keyboard.addKey("P");
+
+        this.resumeButton = new BaseButton(this, this.cameras.main.centerX, this.cameras.main.centerY, "Resume", this.resumeGame.bind(this));
+        this.add.existing(this.resumeButton);
+        this.resumeButton.setVisible(false);
     }
 
     updateScore(): void {
@@ -31,9 +39,9 @@ export class HUDScene extends Phaser.Scene {
     update(): void {
         if (this.input.keyboard.checkDown(this.pKey, 1000)) {
             if (!this.scene.isPaused("MainScene")) {
-                this.scene.pause("MainScene");
+                this.pauseGame();
             } else {
-                this.scene.resume("MainScene");
+                this.resumeGame();
             }
         }
 
@@ -41,5 +49,15 @@ export class HUDScene extends Phaser.Scene {
             this.displayScore++;
         }
         this.scoreText.setText(this.displayScore.toString());
+    }
+
+    pauseGame(): void {
+        this.scene.pause("MainScene");
+        this.resumeButton.setVisible(true);
+    }
+
+    resumeGame(): void {
+        this.scene.resume("MainScene");
+        this.resumeButton.setVisible(false);
     }
 }
