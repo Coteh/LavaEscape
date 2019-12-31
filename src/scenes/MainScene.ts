@@ -8,6 +8,7 @@ import { AbstractChunkFactory, ChunkResult } from "../factory/chunks/AbstractChu
 import { Enemy } from "../gameobjects/Enemy";
 import { EnemyManager } from "../managers/EnemyManager";
 import { Pickup } from "../gameobjects/Pickup";
+import { BlockChunk, destroyChunk } from "../types/BlockChunk";
 
 const SPEED_UP_TIME: number = 10000;
 const ENEMY_COOLDOWN_MAX: number = 1000;
@@ -17,8 +18,11 @@ export class MainScene extends Phaser.Scene {
     private player: Player;
     private lava: Lava;
     private chunkStartPos: number;
+    // chunks go way beyond their height
+    // TODO define chunk height at factory level
+    // TODO ensure no blocks/pickups go beyond the chunk height
     private chunkHeight: number = 1200;
-    private blockChunks: Block[][];
+    private blockChunks: BlockChunk[];
     private enemies: Enemy[];
     private lavaSpeedupFactor: number = 1000;
     private lavaSpeedDivisor: number = 4;
@@ -76,7 +80,11 @@ export class MainScene extends Phaser.Scene {
         block.setPlayerCollideFunc(this.onPlatformHit.bind(this));
         this.add.existing(block);
         blocks.push(block);
-        this.blockChunks.push(blocks);
+        this.blockChunks.push({
+            blocks,
+            chunkStart: 600,
+            chunkHeight: this.chunkHeight,
+        });
         // make the center of this bottom block camera focus point
         this.centerPos = block.getBounds().centerX;
         this.cameras.main.centerOnX(this.centerPos);
@@ -85,7 +93,11 @@ export class MainScene extends Phaser.Scene {
         this.left = -200;
         this.right = this.cameras.main.width + this.left;
         var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
-        this.blockChunks.push(chunk.blocks);
+        this.blockChunks.push({
+            blocks: chunk.blocks,
+            chunkStart: this.chunkStartPos,
+            chunkHeight: this.chunkHeight
+        });
         chunk.pickups.forEach((pickup) => {
             this.pickups.push(pickup);
         });
@@ -140,8 +152,10 @@ export class MainScene extends Phaser.Scene {
         this.debugManager.setText("playerY", this.player.y.toString());
         this.player.update(time, delta);
         var playerGrounded: boolean = false;
+        var blockChunkIndex: number = 0;
+        var highestCullChunk: number = -1;
         this.blockChunks.forEach(blockChunk => {
-            blockChunk.forEach(block => {
+            blockChunk.blocks.forEach(block => {
                 if (block.active) {
                     block.update(time, delta);
                     if (block.hasPlayerGrounded()) {
@@ -149,16 +163,30 @@ export class MainScene extends Phaser.Scene {
                     }
                 }
             });
+            if (this.lava.y + this.lava.getBounds().height < blockChunk.chunkStart - blockChunk.chunkHeight * 4) {
+                destroyChunk(blockChunk);
+                highestCullChunk = blockChunkIndex;
+            }
+            blockChunkIndex++;
         });
         // If the player is not currently on any block, then unground them
         if (!playerGrounded) {
             this.player.setGrounded(false);
         }
+        // Cull old block chunks
+        if (highestCullChunk >= 0) {
+            this.blockChunks = this.blockChunks.slice(highestCullChunk + 1);
+            highestCullChunk = -1;
+        }
 
         if (this.player.y < this.chunkStartPos - this.chunkHeight) {
             this.chunkStartPos -= this.chunkHeight + (this.chunkHeight / 2);
             var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
-            this.blockChunks.push(chunk.blocks);
+            this.blockChunks.push({
+                blocks: chunk.blocks,
+                chunkStart: this.chunkStartPos,
+                chunkHeight: this.chunkHeight
+            });
             chunk.pickups.forEach((pickup) => {
                 this.pickups.push(pickup);
             });
