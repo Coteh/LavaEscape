@@ -5,6 +5,7 @@ import { Scene } from "phaser";
 import { Player } from "../../gameobjects/Player";
 import { RegularBlockComponent } from "../../gameobjects/blocks/RegularBlockComponent";
 import { getManualBounds } from "../../util/Bounds";
+import { ChunkHelper } from "../../util/ChunkHelper";
 
 export class NormalChunkFactory {
     private scene: Scene;
@@ -19,15 +20,11 @@ export class NormalChunkFactory {
         this.onPickupFunc = onPickupFunc;
     }
 
-    randomOffset(): number {
-        return Math.random() * 800;
-    }
-
     createChunk(x: number, y: number): ChunkResult {
         var blocks: Block[] = [];
         var pickups: Pickup[] = [];
         for (let i = 0; i < 10; i++) {
-            var block: Block = new Block(this.scene, x + this.randomOffset(), y - (i * 200), 100, 20, 0xff0000, 1, new RegularBlockComponent(this.player), 0);
+            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 200), 100, 20, 0xb5651d, 1, new RegularBlockComponent(this.player), 0);
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);
@@ -43,7 +40,7 @@ export class NormalChunkFactory {
             //     block.setPlayerCollideFunc(this.playerCollisionFunc);
             //     blocks.push(block);
             // }
-            var block: Block = new Block(this.scene, x + this.randomOffset(), y - (i * 300), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
+            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 300), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);

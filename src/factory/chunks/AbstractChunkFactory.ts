@@ -31,10 +31,6 @@ export class AbstractChunkFactory {
         this.chunkFactories.push(new HardChunkFactory(scene, player, playerCollisionFunc, onPickupFunc));
     }
 
-    randomPosition(): number {
-        return Math.random() * 300 + 200;
-    }
-
     createChunk(x: number, y: number): ChunkResult {
         var rand: number = Math.round(Math.random() * 2);
         var result: ChunkResult;

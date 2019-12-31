@@ -93,7 +93,7 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.centerOnX(this.centerPos);
         // create first chunk
         this.chunkStartPos = 200;
-        this.left = -200;
+        this.left = -50;
         this.right = this.cameras.main.width + this.left;
         var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
         this.blockChunks.push({

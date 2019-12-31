@@ -31,15 +31,19 @@ export class Block extends Phaser.GameObjects.Rectangle {
     public update(time: number, delta: number): void {
         var oldX: number = this.x;
         this.x += this.speed;
-        if (this.x < 100) {
-            this.x = 100;
-            this.speed = -this.speed;
-        } else if (this.x > 450) {
-            this.x = 450;
-            this.speed = -this.speed;
+        // TODO do not hardcode leftmost and rightmost
+        var blockBounds = getManualBounds(this);
+        if (this.speed != 0) {
+            if (this.x - blockBounds.width / 2 < -100) {
+                this.x = -100 + blockBounds.width / 2;
+                this.speed = -this.speed;
+            } else if (this.x + blockBounds.width / 2 > 600) {
+                this.x = 600 - blockBounds.width / 2;
+                this.speed = -this.speed;
+            }
         }
         var playerBounds = getManualBounds(this.player);
-        var blockBounds = getManualBounds(this);
+        blockBounds = getManualBounds(this);
         if (CollideFuncs.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
             this.playerCollideFunc(this.player, this);
             this.playerGrounded = true;
