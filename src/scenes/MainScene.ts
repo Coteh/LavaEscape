@@ -10,6 +10,7 @@ import { Enemy } from "../gameobjects/Enemy";
 import { EnemyManager } from "../managers/EnemyManager";
 import { Pickup } from "../gameobjects/Pickup";
 import { BlockChunk, destroyChunk } from "../types/BlockChunk";
+import { getManualBounds } from "../util/Bounds";
 
 const SPEED_UP_TIME: number = 10000;
 const ENEMY_COOLDOWN_MAX: number = 1000;
@@ -88,7 +89,7 @@ export class MainScene extends Phaser.Scene {
             chunkHeight: this.chunkHeight,
         });
         // make the center of this bottom block camera focus point
-        this.centerPos = block.getBounds().centerX;
+        this.centerPos = getManualBounds(block).centerX;
         this.cameras.main.centerOnX(this.centerPos);
         // create first chunk
         this.chunkStartPos = 200;
@@ -136,7 +137,9 @@ export class MainScene extends Phaser.Scene {
 
     onPlatformHit(player: Player, block: Block): void {
         player.setGrounded(true);
-        player.y = block.y - block.getBounds().height / 2 - player.getBounds().height / 2;
+        var blockBounds = getManualBounds(block);
+        var playerBounds = getManualBounds(player);
+        player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
         block.executeBlockHitEffect();
     }
     
@@ -167,6 +170,7 @@ export class MainScene extends Phaser.Scene {
         var playerGrounded: boolean = false;
         var blockChunkIndex: number = 0;
         var highestCullChunk: number = -1;
+        var lavaBounds = getManualBounds(this.lava);
         this.blockChunks.forEach(blockChunk => {
             blockChunk.blocks.forEach(block => {
                 if (block.active) {
@@ -176,7 +180,7 @@ export class MainScene extends Phaser.Scene {
                     }
                 }
             });
-            if (this.lava.y + this.lava.getBounds().height < blockChunk.chunkStart - blockChunk.chunkHeight * 4) {
+            if (this.lava.y + lavaBounds.height < blockChunk.chunkStart - blockChunk.chunkHeight * 4) {
                 destroyChunk(blockChunk);
                 highestCullChunk = blockChunkIndex;
             }
@@ -205,8 +209,8 @@ export class MainScene extends Phaser.Scene {
             });
         }
         this.lava.update(time, delta);
-        var playerBounds = this.player.getBounds();
-        var lavaBounds = this.lava.getBounds();
+        var playerBounds = getManualBounds(this.player);
+        var lavaBounds = getManualBounds(this.lava);
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
             this.scene.stop("MainScene");
             this.scene.start("MainScene"); // TODO remove once game over screen is made
@@ -219,10 +223,10 @@ export class MainScene extends Phaser.Scene {
             this.player.x = this.right - playerBounds.width / 2;
         }
         
+        playerBounds = getManualBounds(this.player);
         this.enemies.forEach((enemy) => {
             enemy.update(time, delta);
-            var playerBounds = this.player.getBounds();
-            var enemyBounds = enemy.getBounds();
+            var enemyBounds = getManualBounds(enemy);
             if (CollideFuncs.hitBounds(playerBounds, enemyBounds)) {
                 if (this.player.x > enemyBounds.centerX) {
                     this.player.applyForce(30, 0);
@@ -232,13 +236,13 @@ export class MainScene extends Phaser.Scene {
             }
         });
         
+        playerBounds = getManualBounds(this.player);
         this.pickups.forEach((pickup) => {
             if (!pickup.active) {
                 return;
             }
             pickup.update(time, delta);
-            var playerBounds = this.player.getBounds();
-            var pickupBounds = pickup.getBounds();
+            var pickupBounds = getManualBounds(pickup);
             if (CollideFuncs.hitBounds(playerBounds, pickupBounds)) {
                 pickup.activatePickup();
                 pickup.destroy(true);

@@ -1,6 +1,7 @@
 import { BlockComponent } from "./blocks/BlockComponent";
 import { Player } from "./Player";
 import { CollideFuncs } from "../util/CollideFuncs";
+import { getManualBounds } from "../util/Bounds";
 
 export class Block extends Phaser.GameObjects.Rectangle {
     private jumpFactor: number;
@@ -37,8 +38,8 @@ export class Block extends Phaser.GameObjects.Rectangle {
             this.x = 450;
             this.speed = -this.speed;
         }
-        var playerBounds = this.player.getBounds();
-        var blockBounds = this.getBounds();
+        var playerBounds = getManualBounds(this.player);
+        var blockBounds = getManualBounds(this);
         if (CollideFuncs.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
             this.playerCollideFunc(this.player, this);
             this.playerGrounded = true;

@@ -4,6 +4,7 @@ import { Block } from "../../gameobjects/Block";
 import { Scene } from "phaser";
 import { Player } from "../../gameobjects/Player";
 import { RegularBlockComponent } from "../../gameobjects/blocks/RegularBlockComponent";
+import { getManualBounds } from "../../util/Bounds";
 
 export class HardChunkFactory {
     private scene: Scene;
@@ -32,7 +33,8 @@ export class HardChunkFactory {
             blocks.push(block);
             var rand = Math.round(Math.random() * 10);
             if (rand % 10 == 5) {
-                var pickup: Pickup = new Pickup(this.scene, block.x + block.getBounds().width / 2, block.y - block.getBounds().height / 2 - 30, 60, 60, "lava_sink", this.onPickupFunc);
+                var blockBounds = getManualBounds(block);
+                var pickup: Pickup = new Pickup(this.scene, block.x + blockBounds.width / 2, block.y - blockBounds.height / 2 - 30, 60, 60, "lava_sink", this.onPickupFunc);
                 pickups.push(pickup);
             }
             // if (i % 2 == 0) {

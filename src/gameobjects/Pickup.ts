@@ -1,3 +1,5 @@
+import { getManualBounds } from "../util/Bounds";
+
 export class Pickup extends Phaser.GameObjects.Sprite {
     private onPickup: Function;
     private lockObject: Phaser.GameObjects.Sprite | Phaser.GameObjects.Rectangle;
@@ -13,7 +15,7 @@ export class Pickup extends Phaser.GameObjects.Sprite {
 
     update(time: number, delta: number): void {
         if (this.lockObject) {
-            this.x = this.lockObject.getBounds().centerX;
+            this.x = getManualBounds(this.lockObject).centerX;
         }
     }
 
