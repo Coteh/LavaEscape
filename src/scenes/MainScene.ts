@@ -5,6 +5,7 @@ import { DebugManager } from "../managers/DebugManager";
 import { RegularBlockComponent } from "../gameobjects/blocks/RegularBlockComponent";
 import { CollideFuncs } from "../util/CollideFuncs";
 import { AbstractChunkFactory, ChunkResult } from "../factory/chunks/AbstractChunkFactory";
+import { GameManager } from "../managers/GameManager";
 import { Enemy } from "../gameobjects/Enemy";
 import { EnemyManager } from "../managers/EnemyManager";
 import { Pickup } from "../gameobjects/Pickup";
@@ -15,6 +16,7 @@ const ENEMY_COOLDOWN_MAX: number = 1000;
 const MIN_ENEMY_MODULUS: number = 2;
 
 export class MainScene extends Phaser.Scene {
+    private gameManager: GameManager;
     private player: Player;
     private lava: Lava;
     private chunkStartPos: number;
@@ -115,10 +117,21 @@ export class MainScene extends Phaser.Scene {
         this.debugManager.addKey("playerX");
         this.debugManager.addKey("playerY");
         this.debugManager.addKey("mana");
+        this.debugManager.addKey("highscore");
         this.player.setDebugManager(this.debugManager);
         // this.sound.play("music");
         this.enemies = [];
         this.enemyManager = new EnemyManager(this, this.player);
+        this.gameManager = this.registry.get("gameManager");
+        if (!this.gameManager) {
+            this.gameManager = new GameManager(this);
+            this.registry.set("gameManager", this.gameManager);
+        }
+        this.gameManager.setDebugManager(this.debugManager);
+        this.gameManager.init();
+        this.events.on("updateScore", (score) => {
+            this.gameManager.updateHighScore();
+        });
     }
 
     onPlatformHit(player: Player, block: Block): void {
@@ -196,6 +209,7 @@ export class MainScene extends Phaser.Scene {
         var lavaBounds = this.lava.getBounds();
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
             this.scene.stop("MainScene");
+            this.scene.start("MainScene"); // TODO remove once game over screen is made
             this.events.emit("gameOver");
         }
 

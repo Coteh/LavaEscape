@@ -57,7 +57,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         // TODO separate score logic into main game manager, perhaps use observer pattern?
         var workingScore: number = -this.y + 500;
         if (this.speed > 0 && workingScore > this.score) {
-            this.score = workingScore;
+            this.score = Math.ceil(workingScore);
         }
         this.scene.registry.set("score", this.score);
         this.scene.events.emit("updateScore");

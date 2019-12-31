@@ -55,7 +55,7 @@ export class HUDScene extends Phaser.Scene {
     }
 
     gameOver(): void {
-        this.displayScore = Math.ceil(this.score);
+        this.displayScore = this.score;
     }
 
     pauseGame(): void {
