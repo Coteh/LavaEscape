@@ -3,7 +3,7 @@ import { Player } from "./Player";
 import { CollideFuncs } from "../util/CollideFuncs";
 import { getManualBounds } from "../util/Bounds";
 
-export class Block extends Phaser.GameObjects.Rectangle {
+export class Block extends Phaser.GameObjects.Sprite {
     private jumpFactor: number;
     private component: BlockComponent;
     private speed: number;
@@ -12,8 +12,10 @@ export class Block extends Phaser.GameObjects.Rectangle {
     private playerGrounded: boolean;
     private deltaX: number = 0;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, fillColor: number, jumpFactor: number, component: BlockComponent, speed: number) {
-        super(scene, x, y, width, height, fillColor, 1);
+    constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, sprite: string, jumpFactor: number, component: BlockComponent, speed: number) {
+        super(scene, x, y, sprite);
+        this.setSize(width, height);
+        this.setDisplaySize(width, height);
         this.jumpFactor = jumpFactor;
         this.component = component;
         this.component.setBlock(this);

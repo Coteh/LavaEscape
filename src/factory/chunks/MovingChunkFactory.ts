@@ -24,7 +24,7 @@ export class MovingChunkFactory {
         var blocks: Block[] = [];
         var pickups: Pickup[] = [];
         for (let i = 0; i < 10; i++) {
-            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 200), 100, 20, 0xb5651d, 1, new RegularBlockComponent(this.player), ChunkHelper.randomSpeed());
+            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 200), 100, 20, "reg_platform", 1, new RegularBlockComponent(this.player), ChunkHelper.randomSpeed());
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);
@@ -41,7 +41,7 @@ export class MovingChunkFactory {
             //     block.setPlayerCollideFunc(this.playerCollisionFunc);
             //     blocks.push(block);
             // }
-            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 300), 20, 20, 0x654321, 1, new RegularBlockComponent(this.player), 0);
+            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 300), 20, 20, "reg_platform", 1, new RegularBlockComponent(this.player), 0);
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);

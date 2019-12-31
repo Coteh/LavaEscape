@@ -60,6 +60,8 @@ export class MainScene extends Phaser.Scene {
         this.load.image("player", "./assets/img/Smiley.png");
         this.load.image("rock", "./assets/img/SpikeBall.png");
         this.load.image("lava_sink", "./assets/img/Star.png");
+        this.load.image("reg_platform", "./assets/img/Platform.png");
+        this.load.image("base_platform", "./assets/img/BasePlatform.png");
         this.keys = new Map([
             ["LEFT", this.input.keyboard.addKey("LEFT")],
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
@@ -78,7 +80,8 @@ export class MainScene extends Phaser.Scene {
         this.chunkFactory = new AbstractChunkFactory(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
         // block "chunk" of just the bottom block
         var blocks: Block[] = [];
-        var block = new Block(this, 200, 600, 1000, 500, 0xfff000, 1, new RegularBlockComponent(this.player), 0)
+        var block = new Block(this, 200, 600, 1000, 500, "base_platform", 1, new RegularBlockComponent(this.player), 0);
+        block.setDisplaySize(800, 500);
         block.setPlayerReference(this.player);
         block.setPlayerCollideFunc(this.onPlatformHit.bind(this));
         this.add.existing(block);
@@ -93,7 +96,7 @@ export class MainScene extends Phaser.Scene {
         this.cameras.main.centerOnX(this.centerPos);
         // create first chunk
         this.chunkStartPos = 200;
-        this.left = -50;
+        this.left = -200;
         this.right = this.cameras.main.width + this.left;
         var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
         this.blockChunks.push({

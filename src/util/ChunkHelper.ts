@@ -1,6 +1,6 @@
 export namespace ChunkHelper {
     export function randomOffset(): number {
-        return Math.random() * 600;
+        return Math.random() * 600 + 150;
     }
 
     export function randomSpeed(): number {
