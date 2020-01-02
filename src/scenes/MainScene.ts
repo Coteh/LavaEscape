@@ -201,8 +201,6 @@ export class MainScene extends Phaser.Scene {
         var playerBounds = getManualBounds(this.player);
         var lavaBounds = getManualBounds(this.lava);
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
-            // this.scene.stop("MainScene");
-            // this.scene.start("MainScene"); // TODO remove once game over screen is made
             this.cameras.main.stopFollow();
             this.player.destroy(true);
             this.lava.setGameOverSpeed();
