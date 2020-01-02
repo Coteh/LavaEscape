@@ -26,7 +26,7 @@ export class TitleScene extends Phaser.Scene {
         this.title = this.add.text(this.cameras.main.centerX - 60, 100, "Lava Escape", {
             color: "#f00"
         });
-        this.copyright = this.add.text(this.cameras.main.centerX - 60 - 40, this.cameras.main.height - 32, String.fromCharCode(169) + " 2019 James Cote", {
+        this.copyright = this.add.text(this.cameras.main.centerX - 60 - 40, this.cameras.main.height - 32, String.fromCharCode(169) + " 2019-2020 James Cote", {
             color: "#fff"
         });
         var lava = new Lava(this, 800, 500, null);
