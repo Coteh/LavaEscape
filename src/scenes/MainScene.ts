@@ -106,7 +106,7 @@ export class MainScene extends Phaser.Scene {
         chunk.pickups.forEach((pickup) => {
             this.pickups.push(pickup);
         });
-        this.lava = new Lava(this, 1500, this.player);
+        this.lava = new Lava(this, 1500, 600, this.player);
         this.lava.depth = 500;
         this.add.existing(this.lava);
         // this.sound.play("music");
@@ -153,7 +153,9 @@ export class MainScene extends Phaser.Scene {
         this.events.emit("debug", "grounded", this.player.isGrounded().toString());
         this.events.emit("debug", "playerX", this.player.x.toString());
         this.events.emit("debug", "playerY", this.player.y.toString());
-        this.player.update(time, delta);
+        if (!this.gameManager.isGameOver()) {
+            this.player.update(time, delta);
+        }
         var playerGrounded: boolean = false;
         var blockChunkIndex: number = 0;
         var highestCullChunk: number = -1;
@@ -199,9 +201,13 @@ export class MainScene extends Phaser.Scene {
         var playerBounds = getManualBounds(this.player);
         var lavaBounds = getManualBounds(this.lava);
         if (CollideFuncs.hitTop(playerBounds, lavaBounds)) {
-            this.scene.stop("MainScene");
-            this.scene.start("MainScene"); // TODO remove once game over screen is made
+            // this.scene.stop("MainScene");
+            // this.scene.start("MainScene"); // TODO remove once game over screen is made
+            this.cameras.main.stopFollow();
+            this.player.destroy(true);
+            this.lava.setGameOverSpeed();
             this.events.emit("gameOver");
+            this.gameManager.setGameOver(true);
         }
 
         if (this.player.x - playerBounds.width / 2 < this.left) {
@@ -236,7 +242,9 @@ export class MainScene extends Phaser.Scene {
             }
         });
 
-        this.cameras.main.centerOnY(this.player.y);
+        if (!this.gameManager.isGameOver()) {
+            this.cameras.main.centerOnY(this.player.y);
+        }
         
         this.events.emit("debug", "lavaSpeedupFactor", this.lavaSpeedupFactor.toString());
         this.events.emit("debug", "lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
