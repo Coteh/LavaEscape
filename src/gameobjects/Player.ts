@@ -1,4 +1,5 @@
 import { Block } from "./Block";
+import { PositionLock } from "./PositionLock";
 
 const DEFAULT_JUMP_FACTOR = 1.0;
 const MAX_HOLD_FACTOR = 2.5;
@@ -17,8 +18,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     private held: boolean;
     private holdFactor: number = 1;
     private mana: number = MAX_MANA;
-    // TODO can make locking on blocks its own component
-    private lockBlock: Block;
+    private lockBlock: PositionLock;
 
     private onJump: Function;
 
@@ -36,7 +36,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     }
 
     public lockOn(block: Block) {
-        this.lockBlock = block;
+        this.lockBlock = new PositionLock(this.scene, this, block);
     }
 
     public unlock() {
@@ -45,7 +45,7 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     update(time: number, delta: number): void {
         if (this.lockBlock) {
-            this.x += this.lockBlock.getDeltaX();
+            this.lockBlock.update(time, delta);
         }
         if (!this.grounded)
             this.y += this.speed * delta;
