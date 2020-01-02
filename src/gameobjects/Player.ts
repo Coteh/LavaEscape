@@ -1,4 +1,3 @@
-import { DebugManager } from "../managers/DebugManager";
 import { Block } from "./Block";
 
 const DEFAULT_JUMP_FACTOR = 1.0;
@@ -22,8 +21,6 @@ export class Player extends Phaser.GameObjects.Sprite {
     private lockBlock: Block;
 
     private onJump: Function;
-
-    private debugManager: DebugManager;
 
     constructor(scene: Phaser.Scene, x: number, y: number, keys: Map<string, Phaser.Input.Keyboard.Key>) {
         super(scene, x, y, "player");
@@ -61,8 +58,8 @@ export class Player extends Phaser.GameObjects.Sprite {
         }
         this.scene.registry.set("score", this.score);
         this.scene.events.emit("updateScore");
-        this.debugManager.setText("yspeed", this.speed.toString());
-        this.debugManager.setText("xspeed", this.xSpeed.toString());
+        this.scene.events.emit("debug", "yspeed", this.speed.toString());
+        this.scene.events.emit("debug", "xspeed", this.xSpeed.toString());
         this.speed += this.accel;
         this.x += this.xSpeed + this.xForce;
         this.xSpeed *= 0.49;
@@ -89,7 +86,7 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.mana = MAX_MANA;
             }
         }
-        this.debugManager.setText("mana", this.mana.toString());
+        this.scene.events.emit("debug", "mana", this.mana.toString());
         if (this.keys.get("LEFT").isDown) {
             this.xSpeed = -5;
         }
@@ -134,9 +131,5 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     public getSpeed(): number {
         return this.speed;
-    }
-
-    public setDebugManager(manager: DebugManager) {
-        this.debugManager = manager;
     }
 };

@@ -29,7 +29,7 @@ export class TitleScene extends Phaser.Scene {
         this.copyright = this.add.text(this.cameras.main.centerX - 60 - 40, this.cameras.main.height - 32, String.fromCharCode(169) + " 2019 James Cote", {
             color: "#fff"
         });
-        var lava = new Lava(this, 800, null, null);
+        var lava = new Lava(this, 800, null);
         this.add.existing(lava);
         lava.setDepth(-500);
         var factory = new AbstractChunkFactory(this, null, null, null);

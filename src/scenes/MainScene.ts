@@ -1,7 +1,6 @@
 import { Player } from "../gameobjects/Player";
 import { Block } from "../gameobjects/Block";
 import { Lava } from "../gameobjects/Lava";
-import { DebugManager } from "../managers/DebugManager";
 import { RegularBlockComponent } from "../gameobjects/blocks/RegularBlockComponent";
 import { CollideFuncs } from "../util/CollideFuncs";
 import { AbstractChunkFactory, ChunkResult } from "../factory/chunks/AbstractChunkFactory";
@@ -39,7 +38,6 @@ export class MainScene extends Phaser.Scene {
 
     private keys: Map<string,Phaser.Input.Keyboard.Key>;
     
-    private debugManager: DebugManager;
     private chunkFactory: AbstractChunkFactory;
     private enemyManager: EnemyManager;
 
@@ -74,7 +72,8 @@ export class MainScene extends Phaser.Scene {
     
     create(): void {
         this.scene.launch("HUDScene");
-        this.debugManager = new DebugManager(this);
+        // TODO make debug scene toggleable
+        this.scene.launch("DebugScene");
         this.player = new Player(this, 300, 500, this.keys);
         this.player.setOnJump(this.onJump.bind(this));
         this.chunkFactory = new AbstractChunkFactory(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
@@ -107,22 +106,9 @@ export class MainScene extends Phaser.Scene {
         chunk.pickups.forEach((pickup) => {
             this.pickups.push(pickup);
         });
-        this.lava = new Lava(this, 1500, this.player, this.debugManager);
+        this.lava = new Lava(this, 1500, this.player);
         this.lava.depth = 500;
         this.add.existing(this.lava);
-        this.debugManager.addKey("xspeed");
-        this.debugManager.addKey("yspeed");
-        this.debugManager.addKey("playerlava");
-        this.debugManager.addKey("lavaSpeed");
-        this.debugManager.addKey("lavaForgiveness");
-        this.debugManager.addKey("lavaSpeedupFactor");
-        this.debugManager.addKey("lavaSpeedDivisor");
-        this.debugManager.addKey("grounded");
-        this.debugManager.addKey("playerX");
-        this.debugManager.addKey("playerY");
-        this.debugManager.addKey("mana");
-        this.debugManager.addKey("highscore");
-        this.player.setDebugManager(this.debugManager);
         // this.sound.play("music");
         this.enemies = [];
         this.enemyManager = new EnemyManager(this, this.player);
@@ -131,7 +117,6 @@ export class MainScene extends Phaser.Scene {
             this.gameManager = new GameManager(this);
             this.registry.set("gameManager", this.gameManager);
         }
-        this.gameManager.setDebugManager(this.debugManager);
         this.gameManager.init();
         this.events.on("updateScore", (score) => {
             this.gameManager.updateHighScore();
@@ -165,10 +150,9 @@ export class MainScene extends Phaser.Scene {
 
     update(time: number, delta: number): void {
         this.elapsedTime += delta;
-
-        this.debugManager.setText("grounded", this.player.isGrounded().toString());
-        this.debugManager.setText("playerX", this.player.x.toString());
-        this.debugManager.setText("playerY", this.player.y.toString());
+        this.events.emit("debug", "grounded", this.player.isGrounded().toString());
+        this.events.emit("debug", "playerX", this.player.x.toString());
+        this.events.emit("debug", "playerY", this.player.y.toString());
         this.player.update(time, delta);
         var playerGrounded: boolean = false;
         var blockChunkIndex: number = 0;
@@ -254,8 +238,8 @@ export class MainScene extends Phaser.Scene {
 
         this.cameras.main.centerOnY(this.player.y);
         
-        this.debugManager.setText("lavaSpeedupFactor", this.lavaSpeedupFactor.toString());
-        this.debugManager.setText("lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
+        this.events.emit("debug", "lavaSpeedupFactor", this.lavaSpeedupFactor.toString());
+        this.events.emit("debug", "lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
         if (this.elapsedTime > this.speedUpTime) {
             this.lava.speedUp(this.lavaSpeedupFactor);
             this.enemyModulus = (this.enemyModulus > MIN_ENEMY_MODULUS) ? this.enemyModulus - 2 : this.enemyModulus; // TODO have a separate speedup timer for enemy spawn likelihood increase

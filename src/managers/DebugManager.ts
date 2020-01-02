@@ -9,13 +9,13 @@ export class DebugManager {
         this.y = 0;
     }
 
-    public addKey(key: string) {
+    public addKey(key: string): void {
         this.debugTexts[key] = this.scene.add.text(0, this.y, "");
         this.debugTexts[key].setScrollFactor(0);
         this.y += 32;
     }
 
-    public setText(key: string, text: string) {
+    public setText(key: string, text: string): void {
         this.debugTexts[key].setText(key + ": " + text);
     }
 }
