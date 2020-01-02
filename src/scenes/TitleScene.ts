@@ -1,12 +1,9 @@
 import { BaseButton } from "../gameobjects/buttons/BaseButton";
 import { Lava } from "../gameobjects/Lava";
 import { AbstractChunkFactory } from "../factory/chunks/AbstractChunkFactory";
-import { Pickup } from "../gameobjects/Pickup";
 
 export class TitleScene extends Phaser.Scene {
     private menuButtons: BaseButton[];
-    private title: Phaser.GameObjects.Text;
-    private copyright: Phaser.GameObjects.Text;
 
     constructor() {
         super({
@@ -23,10 +20,13 @@ export class TitleScene extends Phaser.Scene {
         var startBtn: BaseButton = new BaseButton(this, this.cameras.main.centerX - 60, this.cameras.main.centerY, "Start Game", this.startGame.bind(this));
         this.add.existing(startBtn);
         this.menuButtons.push(startBtn);
-        this.title = this.add.text(this.cameras.main.centerX - 60, 100, "Lava Escape", {
+        var title: Phaser.GameObjects.Text = this.add.text(this.cameras.main.centerX - 60, 100, "Lava Escape", {
             color: "#f00"
         });
-        this.copyright = this.add.text(this.cameras.main.centerX - 60 - 40, this.cameras.main.height - 32, String.fromCharCode(169) + " 2019-2020 James Cote", {
+        var copyright: Phaser.GameObjects.Text = this.add.text(this.cameras.main.centerX - 60 - 40, this.cameras.main.height - 32, String.fromCharCode(169) + " 2019-2020 James Cote", {
+            color: "#fff"
+        });
+        var versionNumber: Phaser.GameObjects.Text = this.add.text(this.cameras.main.width - 72, 16, "v0.1.0", {
             color: "#fff"
         });
         var lava = new Lava(this, 800, 500, null);
