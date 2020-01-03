@@ -34,8 +34,6 @@ export class MainScene extends Phaser.Scene {
     private right: number;
     private centerPos: number;
 
-    private cKey: Phaser.Input.Keyboard.Key;
-
     private keys: Map<string,Phaser.Input.Keyboard.Key>;
     
     private chunkFactory: AbstractChunkFactory;
@@ -65,14 +63,15 @@ export class MainScene extends Phaser.Scene {
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
             ["SPACE", this.input.keyboard.addKey("SPACE")],
         ]);
-        this.cKey = this.input.keyboard.addKey("C");
+        if (process.env.IS_DEBUG) {
+            this.keys.set("D", this.input.keyboard.addKey("D"));
+        }
         // TODO add loading screen
         // this.load.audio("music", ["./assets/audio/red_mountain.mp3"]);
     }
     
     create(): void {
         this.scene.launch("HUDScene");
-        // TODO make debug scene toggleable
         this.scene.launch("DebugScene");
         this.player = new Player(this, 300, 500, this.keys);
         this.player.setOnJump(this.onJump.bind(this));
@@ -256,9 +255,9 @@ export class MainScene extends Phaser.Scene {
             }
         }
         
-        if (this.input.keyboard.checkDown(this.cKey, 1000)) {
-            // TODO insert anything you want to debug here, and remove this key before finishing
-            this.lava.moveDown(200);
+        var debugKey = this.keys.get("D");
+        if (debugKey && this.input.keyboard.checkDown(debugKey, 1000)) {
+            this.events.emit("debugToggle");
         }
 
         // Add Cooldown class for enemies and lava speedup

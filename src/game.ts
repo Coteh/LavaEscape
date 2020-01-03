@@ -10,12 +10,18 @@ class BounceyGame extends Phaser.Game {
     }
 }
 
+var scenes: Function[] = [TitleScene, MainScene, HUDScene];
+
+if (process.env.IS_DEBUG) {
+    scenes.push(DebugScene);
+}
+
 window.onload = () => {
     const config: Phaser.Types.Core.GameConfig = {
         title: "Bouncey Game",
         width: 800,
         height: 600,
-        scene: [TitleScene, MainScene, HUDScene, DebugScene],
+        scene: scenes,
         type: Phaser.AUTO,
         parent: "content"
     }

@@ -27,5 +27,12 @@ export class DebugScene extends Phaser.Scene {
         game.events.on("debug", (key, value) => {
             this.debugManager.setText(key, value);
         });
+        game.events.on("debugToggle", () => {
+            this.debugManager.toggleVisibility();
+        });
+        this.events.on("shutdown", () => {
+            game.events.removeAllListeners("debug");
+            game.events.removeAllListeners("debugToggle");
+        });
     }
 }
