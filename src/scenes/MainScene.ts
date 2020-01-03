@@ -215,14 +215,20 @@ export class MainScene extends Phaser.Scene {
         
         playerBounds = getManualBounds(this.player);
         this.enemies.forEach((enemy) => {
+            if (!enemy.active) {
+                return;
+            }
             enemy.update(time, delta);
             var enemyBounds = getManualBounds(enemy);
             if (CollideFuncs.hitBounds(playerBounds, enemyBounds)) {
                 if (this.player.x > enemyBounds.centerX) {
                     this.player.applyForce(30, 0);
                 } else {
-                    this.player.applyForce(-30, 0);   
+                    this.player.applyForce(-30, 0);
                 }
+            }
+            if (enemy.y + enemyBounds.height / 2 > this.lava.y) {
+                enemy.destroy(true);
             }
         });
         
