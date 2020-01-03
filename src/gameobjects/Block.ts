@@ -47,7 +47,9 @@ export class Block extends Phaser.GameObjects.Sprite {
         var playerBounds = getManualBounds(this.player);
         blockBounds = getManualBounds(this);
         if (CollideFuncs.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
-            this.playerCollideFunc(this.player, this);
+            if (!this.playerGrounded) {
+                this.playerCollideFunc(this.player, this);
+            }
             this.playerGrounded = true;
         } else {
             this.playerGrounded = false;

@@ -19,6 +19,8 @@ export class Player extends Phaser.GameObjects.Sprite {
     private holdFactor: number = 1;
     private mana: number = MAX_MANA;
     private lockBlock: PositionLock;
+    private delayedJump: boolean = false;
+    private delayedJumpCoefficient: number;
 
     private onJump: Function;
 
@@ -77,8 +79,13 @@ export class Player extends Phaser.GameObjects.Sprite {
             }
         } else {
             this.held = false;
-            // console.log(this.holdFactor);
             this.jumpFactor = this.holdFactor;
+            if (this.delayedJump) {
+                // TODO the player can now release their jump outside of a block
+                // should this be a gameplay mechanic or treat it as a bug and fix?
+                // can be fixed by creating an onLeave callback for platform leave and remove the delayed jump
+                this.jump(this.delayedJumpCoefficient);
+            }
             this.holdFactor = DEFAULT_JUMP_FACTOR;
             if (this.mana < MAX_MANA) {
                 this.mana += 0.1;
@@ -100,6 +107,8 @@ export class Player extends Phaser.GameObjects.Sprite {
      */
     public jump(coefficient: number): void {
         if (this.held) {
+            this.delayedJump = true;
+            this.delayedJumpCoefficient = coefficient;
             return;
         }
         this.speed = -0.5 * coefficient * this.jumpFactor;
@@ -108,6 +117,7 @@ export class Player extends Phaser.GameObjects.Sprite {
             this.onJump(this);
         }
         this.unlock();
+        this.delayedJump = false;
     }
 
     /**
