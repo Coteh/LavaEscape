@@ -26,6 +26,8 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     constructor(scene: Phaser.Scene, x: number, y: number, keys: Map<string, Phaser.Input.Keyboard.Key>) {
         super(scene, x, y, "player");
+        this.setSize(48, 30);
+        this.setDisplaySize(48, 30);
         this.scene.add.existing(this);
         this.keys = keys;
         this.speed = this.DEFAULT_SPEED;
@@ -96,9 +98,11 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.scene.events.emit("debug", "mana", this.mana.toString());
         if (this.keys.get("LEFT").isDown) {
             this.xSpeed = -5;
+            this.flipX = true;
         }
         if (this.keys.get("RIGHT").isDown) {
             this.xSpeed = 5;
+            this.flipX = false;
         }
     }
 

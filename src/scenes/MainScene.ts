@@ -53,7 +53,7 @@ export class MainScene extends Phaser.Scene {
     }
     
     preload(): void {
-        this.load.image("player", "./assets/img/Smiley.png");
+        this.load.image("player", "./assets/img/Player.png");
         this.load.image("rock", "./assets/img/SpikeBall.png");
         this.load.image("lava_sink", "./assets/img/Star.png");
         this.load.image("reg_platform", "./assets/img/Platform.png");
