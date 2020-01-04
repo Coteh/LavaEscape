@@ -14,11 +14,11 @@ export class TitleScene extends Phaser.Scene {
 
     preload(): void {
         this.load.image("reg_platform", "./assets/img/Platform.png");
-        this.load.image("background", "./assets/img/Background.png");
+        this.load.image("background", "./assets/img/mountain.jpg");
     }
 
     create(): void {
-        var background: Phaser.GameObjects.Image = this.add.image(0, 0, "background");
+        var background: Phaser.GameObjects.Image = this.add.image(0, this.cameras.main.height - this.textures.get("background").get(0).height, "background");
         background.setScrollFactor(0);
         background.setOrigin(0);
         background.setDepth(-1000);

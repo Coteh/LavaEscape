@@ -64,7 +64,7 @@ export class MainScene extends Phaser.Scene {
         this.load.image("lava_sink", "./assets/img/Star.png");
         this.load.image("reg_platform", "./assets/img/Platform.png");
         this.load.image("base_platform", "./assets/img/BasePlatform.png");
-        this.load.image("background", "./assets/img/Background.png");
+        this.load.image("background", "./assets/img/mountain.jpg");
         this.keys = new Map([
             ["LEFT", this.input.keyboard.addKey("LEFT")],
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
