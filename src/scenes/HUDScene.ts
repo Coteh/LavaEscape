@@ -7,7 +7,9 @@ export class HUDScene extends Phaser.Scene {
     private mainScene: Phaser.Scene;
 
     private scoreText: Phaser.GameObjects.Text;
+    private highscoreText: Phaser.GameObjects.Text;
     private score: number;
+    private highscore: number = 0;
     private displayScore: number;
 
     private pKey: Phaser.Input.Keyboard.Key;
@@ -34,8 +36,14 @@ export class HUDScene extends Phaser.Scene {
     }
 
     create(): void {
-        this.scoreText = this.add.text(400, 0, "");
-        this.scoreText.setScrollFactor(0);
+        this.add.text(10, 10, "Score:");
+        this.scoreText = this.add.text(120, 10, "0");
+        this.add.text(10, 30, "High Score:");
+        this.highscoreText = this.add.text(120, 30, "0");
+        if (this.registry.get("highscore")) {
+            this.highscore = this.registry.get("highscore");
+            this.highscoreText.setText(this.highscore.toString());
+        }
 
         this.score = 0;
         this.displayScore = 0;
@@ -95,11 +103,14 @@ export class HUDScene extends Phaser.Scene {
         }
 
         if (this.displayScore < this.score / 2) {
-            this.displayScore += 2;
+            this.displayScore = Math.ceil(this.score / 2);
         } else if (this.displayScore < this.score) {
-            this.displayScore++;
+            this.displayScore = (this.score - this.displayScore === 1) ? this.displayScore + 1 : this.displayScore + 2;
         }
         this.scoreText.setText(this.displayScore.toString());
+        if (this.registry.get("beatHighscore") && this.displayScore > this.highscore) {
+            this.highscoreText.setText(this.displayScore.toString());
+        }
 
         if (this.elapsedSpaceTutorial > 0) {
             if (this.elapsedSpaceTutorial > MAX_SPACE_TUTORIAL_DURATION) {
