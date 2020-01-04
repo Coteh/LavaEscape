@@ -9,6 +9,7 @@ export class HUDScene extends Phaser.Scene {
 
     private pKey: Phaser.Input.Keyboard.Key;
 
+    private pausedText: Phaser.GameObjects.Text;
     private resumeButton: BaseButton;
 
     private gameOverText: Phaser.GameObjects.Text;
@@ -34,6 +35,8 @@ export class HUDScene extends Phaser.Scene {
 
         this.pKey = this.input.keyboard.addKey("P");
 
+        this.pausedText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY - 40, "Paused");
+        this.pausedText.setVisible(false);
         this.resumeButton = new BaseButton(this, this.cameras.main.centerX, this.cameras.main.centerY, "Resume", this.resumeGame.bind(this));
         this.add.existing(this.resumeButton);
         this.resumeButton.setVisible(false);
@@ -80,11 +83,13 @@ export class HUDScene extends Phaser.Scene {
     pauseGame(): void {
         this.scene.pause("MainScene");
         this.resumeButton.setVisible(true);
+        this.pausedText.setVisible(true);
     }
 
     resumeGame(): void {
         this.scene.resume("MainScene");
         this.resumeButton.setVisible(false);
+        this.pausedText.setVisible(false);
     }
 
     restartGame(): void {
