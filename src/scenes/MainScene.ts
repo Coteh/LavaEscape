@@ -10,6 +10,7 @@ import { EnemyManager } from "../managers/EnemyManager";
 import { Pickup } from "../gameobjects/Pickup";
 import { BlockChunk, destroyChunk } from "../types/BlockChunk";
 import { getManualBounds } from "../util/Bounds";
+import { ScrollingBackground } from "../gameobjects/ScrollingBackground";
 
 const SPEED_UP_TIME: number = 10000;
 const ENEMY_COOLDOWN_MAX: number = 1000;
@@ -43,6 +44,8 @@ export class MainScene extends Phaser.Scene {
     private enemyCooldown: number = 0;
     
     private pickups: Pickup[];
+
+    private background: ScrollingBackground;
     
     constructor() {
         super({
@@ -54,10 +57,11 @@ export class MainScene extends Phaser.Scene {
     
     preload(): void {
         this.load.image("player", "./assets/img/Player.png");
-        this.load.image("rock", "./assets/img/SpikeBall.png");
+        this.load.image("rock", "./assets/img/Rock.png");
         this.load.image("lava_sink", "./assets/img/Star.png");
         this.load.image("reg_platform", "./assets/img/Platform.png");
         this.load.image("base_platform", "./assets/img/BasePlatform.png");
+        this.load.image("background", "./assets/img/Background.png");
         this.keys = new Map([
             ["LEFT", this.input.keyboard.addKey("LEFT")],
             ["RIGHT", this.input.keyboard.addKey("RIGHT")],
@@ -73,8 +77,13 @@ export class MainScene extends Phaser.Scene {
     create(): void {
         this.scene.launch("HUDScene");
         this.scene.launch("DebugScene");
+        // Initialize scrolling background
+        this.background = new ScrollingBackground(this, "background");
+        // Setup player
         this.player = new Player(this, 300, 500, this.keys);
         this.player.setOnJump(this.onJump.bind(this));
+        this.background.followPlayer(this.player);
+        // Initialize chunk factory
         this.chunkFactory = new AbstractChunkFactory(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
         // block "chunk" of just the bottom block
         var blocks: Block[] = [];
@@ -272,5 +281,7 @@ export class MainScene extends Phaser.Scene {
         } else {
             this.enemyCooldown = 0;
         }
+
+        this.background.update(time, delta);
     }
 }
