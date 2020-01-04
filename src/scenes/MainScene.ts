@@ -46,6 +46,9 @@ export class MainScene extends Phaser.Scene {
     private pickups: Pickup[];
 
     private background: ScrollingBackground;
+
+    private numberOfBlocksHit: number = 0;
+    private tutorialInProgress: boolean = false;
     
     constructor() {
         super({
@@ -126,8 +129,12 @@ export class MainScene extends Phaser.Scene {
             this.registry.set("gameManager", this.gameManager);
         }
         this.gameManager.init();
-        this.events.on("updateScore", (score) => {
+        this.events.on("updateScore", () => {
             this.gameManager.updateHighScore();
+        });
+        this.events.on("completeTutorial", (tutorialNum) => {
+            this.gameManager.setNumberOfTutorialsCompleted(tutorialNum);
+            this.tutorialInProgress = false;
         });
     }
 
@@ -137,6 +144,11 @@ export class MainScene extends Phaser.Scene {
         var playerBounds = getManualBounds(player);
         player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
         block.executeBlockHitEffect();
+        this.numberOfBlocksHit++;
+        if (this.numberOfBlocksHit > 10 && this.gameManager.getNumberOfTutorialsCompleted() < 1 && !this.tutorialInProgress) {
+            this.events.emit("tutorialStart", 1);
+            this.tutorialInProgress = true;
+        }
     }
     
     onPickup() {

@@ -1,8 +1,11 @@
 import { BaseButton } from "../gameobjects/buttons/BaseButton";
 
 const GAME_OVER_SCREEN_OFFSET: number = -50;
+const MAX_SPACE_TUTORIAL_DURATION: number = 5000;
 
 export class HUDScene extends Phaser.Scene {
+    private mainScene: Phaser.Scene;
+
     private scoreText: Phaser.GameObjects.Text;
     private score: number;
     private displayScore: number;
@@ -16,10 +19,18 @@ export class HUDScene extends Phaser.Scene {
     private beatHighscoreText: Phaser.GameObjects.Text;
     private playAgainButton: BaseButton;
 
+    private spaceKeyImage: Phaser.GameObjects.Sprite;
+    private elapsedSpaceTutorial: number = 0;
+
     constructor() {
         super({
             key: "HUDScene"
         });
+    }
+
+    preload(): void {
+        this.load.image("space", "./assets/img/SpaceKey.png");
+        this.load.image("space_pressed", "./assets/img/SpaceKey_pressed.png");
     }
 
     create(): void {
@@ -29,9 +40,16 @@ export class HUDScene extends Phaser.Scene {
         this.score = 0;
         this.displayScore = 0;
 
-        var mainScene: Phaser.Scene = this.scene.get("MainScene");
-        mainScene.events.on("updateScore", this.updateScore.bind(this));
-        mainScene.events.on("gameOver", this.gameOver.bind(this));
+        this.mainScene = this.scene.get("MainScene");
+        this.mainScene.events.on("updateScore", this.updateScore.bind(this));
+        this.mainScene.events.on("gameOver", this.gameOver.bind(this));
+        this.mainScene.events.on("tutorialStart", (tutorialNum) => {
+            switch (tutorialNum) {
+                default: // 1
+                    this.activateSpaceTutorial();
+                    break;
+            }
+        });
 
         this.pKey = this.input.keyboard.addKey("P");
 
@@ -48,13 +66,26 @@ export class HUDScene extends Phaser.Scene {
         this.playAgainButton = new BaseButton(this, 350, this.cameras.main.centerY + 100 + GAME_OVER_SCREEN_OFFSET, "Play Again", this.restartGame.bind(this));
         this.add.existing(this.playAgainButton);
         this.playAgainButton.setVisible(false);
+
+        this.spaceKeyImage = this.add.sprite(this.cameras.main.centerX, this.cameras.main.centerY, "space");
+        this.anims.create({
+            key: "space_tutorial",
+            frames: [
+                { key: "space", frame: 0 },
+                { key: "space_pressed", frame: 0 }
+            ],
+            frameRate: 2,
+            repeat: -1
+        });
+        this.spaceKeyImage.play("space_tutorial");
+        this.spaceKeyImage.setVisible(false);
     }
 
     updateScore(): void {
         this.score = this.registry.get("score");
     }
 
-    update(): void {
+    update(time: number, delta: number): void {
         if (this.input.keyboard.checkDown(this.pKey, 1000)) {
             if (!this.scene.isPaused("MainScene")) {
                 this.pauseGame();
@@ -69,6 +100,14 @@ export class HUDScene extends Phaser.Scene {
             this.displayScore++;
         }
         this.scoreText.setText(this.displayScore.toString());
+
+        if (this.elapsedSpaceTutorial > 0) {
+            if (this.elapsedSpaceTutorial > MAX_SPACE_TUTORIAL_DURATION) {
+                this.completeSpaceTutorial();
+            } else {
+                this.elapsedSpaceTutorial += delta;
+            }
+        }
     }
 
     gameOver(): void {
@@ -78,21 +117,36 @@ export class HUDScene extends Phaser.Scene {
         if (this.registry.get("beatHighscore")) {
             this.beatHighscoreText.setVisible(true);
         }
+        this.spaceKeyImage.setVisible(false);
     }
 
     pauseGame(): void {
         this.scene.pause("MainScene");
         this.resumeButton.setVisible(true);
         this.pausedText.setVisible(true);
+        this.spaceKeyImage.setVisible(false);
     }
 
     resumeGame(): void {
         this.scene.resume("MainScene");
         this.resumeButton.setVisible(false);
         this.pausedText.setVisible(false);
+        this.spaceKeyImage.setVisible(this.elapsedSpaceTutorial > 0);
     }
 
     restartGame(): void {
         this.scene.start("MainScene");
+    }
+
+    activateSpaceTutorial(): void {
+        this.spaceKeyImage.setVisible(true);
+        this.elapsedSpaceTutorial = 0.000001;
+    }
+
+    completeSpaceTutorial(): void {
+        this.spaceKeyImage.setVisible(false);
+        // TODO this creates a bidirectional flow between MainScene and HUDScene,
+        // any way this can be done better?
+        this.mainScene.events.emit("completeTutorial", 1);
     }
 }

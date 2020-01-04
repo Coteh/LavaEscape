@@ -4,6 +4,7 @@ export class GameManager {
     private scene: Scene;
     private highScore: number = 0;
     private gameOver: boolean;
+    private tutorialsCompleted: number = 0;
     
     constructor(scene: Scene) {
         this.scene = scene;
@@ -28,7 +29,15 @@ export class GameManager {
         return this.gameOver;
     }
 
+    public getNumberOfTutorialsCompleted(): number {
+        return this.tutorialsCompleted;
+    }
+
     public setGameOver(state: boolean): void {
         this.gameOver = state;
+    }
+
+    public setNumberOfTutorialsCompleted(tutorialsCompleted: number): void {
+        this.tutorialsCompleted = tutorialsCompleted;
     }
 }
