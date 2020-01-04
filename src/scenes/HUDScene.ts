@@ -29,9 +29,9 @@ export class HUDScene extends Phaser.Scene {
         this.score = 0;
         this.displayScore = 0;
 
-        var game: Phaser.Scene = this.scene.get("MainScene");
-        game.events.on("updateScore", this.updateScore.bind(this));
-        game.events.on("gameOver", this.gameOver.bind(this));
+        var mainScene: Phaser.Scene = this.scene.get("MainScene");
+        mainScene.events.on("updateScore", this.updateScore.bind(this));
+        mainScene.events.on("gameOver", this.gameOver.bind(this));
 
         this.pKey = this.input.keyboard.addKey("P");
 
