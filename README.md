@@ -2,6 +2,8 @@
 
 A jump game made using Phaser 3 and TypeScript.
 
+**[PLAY HERE](https://coteh.github.io/LavaEscape/)**
+
 ![Lava Escape Screenshot](screenshots/game.png "Lava Escape Screenshot")
 
 ## Features
