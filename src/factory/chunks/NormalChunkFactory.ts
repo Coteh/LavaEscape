@@ -34,13 +34,7 @@ export class NormalChunkFactory {
                 var pickup: Pickup = new Pickup(this.scene, block.x + blockBounds.width / 2, block.y - blockBounds.height / 2 - 30, 60, 60, "lava_sink", this.onPickupFunc);
                 pickups.push(pickup);
             }
-            // if (i % 2 == 0) {
-            //     var block: Block = new Block(this.scene, this.randomOffset(), starting - (i * 250), 100, 20, 0x00ff00, 2, new BrokenBlockComponent(this.player), 0);
-            //     block.setPlayerReference(this.player);
-            //     block.setPlayerCollideFunc(this.playerCollisionFunc);
-            //     blocks.push(block);
-            // }
-            var block: Block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 300), 20, 20, "reg_platform", 1, new RegularBlockComponent(this.player), 0);
+            block = new Block(this.scene, x + ChunkHelper.randomOffset(), y - (i * 300), 20, 20, "reg_platform", 1, new RegularBlockComponent(this.player), 0);
             block.setPlayerReference(this.player);
             block.setPlayerCollideFunc(this.playerCollisionFunc);
             blocks.push(block);

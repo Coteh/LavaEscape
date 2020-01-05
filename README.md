@@ -2,6 +2,8 @@
 
 A jump game made using Phaser 3 and TypeScript.
 
+![Lava Escape Screenshot](screenshots/game.png "Lava Escape Screenshot")
+
 ## Features
 - Basic jump game mechanics
 - Hold down space bar to hold jump and increase jump height
@@ -9,7 +11,7 @@ A jump game made using Phaser 3 and TypeScript.
     - 3 different types of chunks provide different types and configurations of platforms
 - Speed of lava wraps to speed of player
 - Lava dial item pickups decrease the lava height and temporarily slow it down
-- High score
+- High score functionality
 - Vertical scrolling background that loops back to bottom
 
 ## Limitations
@@ -23,6 +25,8 @@ A jump game made using Phaser 3 and TypeScript.
 - Add background music
 - Add high score table
 - Revamp chunking system to provide more variety of platforms
+- Pickup that allows player to jump higher (like holding space to charge jump but no time needed to charge)
+- Adjust game balance (lava speed, pickup spawn rate, etc.)
 
 ## Credits
 - TypeScript and Phaser 3 build configuration based off of digitsensitive's Phaser 3 TypeScript examples ([link](https://github.com/digitsensitive/phaser3-typescript))
