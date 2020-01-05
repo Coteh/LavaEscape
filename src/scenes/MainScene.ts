@@ -61,7 +61,7 @@ export class MainScene extends Phaser.Scene {
     preload(): void {
         this.load.image("player", "./assets/img/Player.png");
         this.load.image("rock", "./assets/img/Rock.png");
-        this.load.image("lava_sink", "./assets/img/Star.png");
+        this.load.image("lava_sink", "./assets/img/LavaDial.png");
         this.load.image("reg_platform", "./assets/img/Platform.png");
         this.load.image("base_platform", "./assets/img/BasePlatform.png");
         this.load.image("background", "./assets/img/mountain.jpg");
