@@ -4,7 +4,7 @@ import { HUDScene } from "./scenes/HUDScene";
 import { TitleScene } from "./scenes/TitleScene";
 import { DebugScene } from "./scenes/DebugScene";
 
-class BounceyGame extends Phaser.Game {
+class LavaEscapeGame extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
         super(config);
     }
@@ -18,12 +18,12 @@ if (process.env.IS_DEBUG) {
 
 window.onload = () => {
     const config: Phaser.Types.Core.GameConfig = {
-        title: "Bouncey Game",
+        title: "Lava Escape",
         width: 800,
         height: 600,
         scene: scenes,
         type: Phaser.AUTO,
         parent: "content"
     }
-    var game = new BounceyGame(config);
+    var game = new LavaEscapeGame(config);
 };
