@@ -1,14 +1,14 @@
 {
-  "name": "bouncey",
+  "name": "lava-escape",
   "version": "1.0.0",
-  "description": "",
+  "description": "Jump game made using Phaser 3 and TypeScript",
   "main": "index.js",
   "scripts": {
     "dev": "webpack-dev-server --env.NODE_ENV=dev",
     "prod": "webpack --mode=production",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "James Cote (Coteh)",
   "license": "ISC",
   "devDependencies": {
     "expose-loader": "0.7.5",
