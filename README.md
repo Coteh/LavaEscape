@@ -6,13 +6,18 @@ A jump game made using Phaser 3 and TypeScript.
 
 ## Features
 - Basic jump game mechanics
+    - Left and right directional movement
+    - Upward force applied to player when they hit top of platform
+    - Score is calculated based on how high up the player is, the higher they go the higher the points
 - Hold down space bar to hold jump and increase jump height
 - Procedural chunks of platforms are generated for the player to jump on
     - 3 different types of chunks provide different types and configurations of platforms
 - Speed of lava wraps to speed of player
+    - Lava is faster the further away it is from the player
+- Lava will also generally speed up over time
 - Lava dial item pickups decrease the lava height and temporarily slow it down
-- High score functionality
 - Vertical scrolling background that loops back to bottom
+- High score functionality
 
 ## Setup
 1. Clone the repository by running `git clone https://github.com/Coteh/LavaEscape.git`
@@ -39,4 +44,4 @@ A jump game made using Phaser 3 and TypeScript.
 ## Credits
 - TypeScript and Phaser 3 build configuration based off of digitsensitive's Phaser 3 TypeScript examples ([link](https://github.com/digitsensitive/phaser3-typescript))
 - Game background by ferdinand feng on Unsplash ([link](https://unsplash.com/photos/2RAt2zMoHqU))
-- Font used is "Press Start" font from dafont ([link](https://www.dafont.com/press-start.font))
+- Font used (currently just for space bar graphic) is "Press Start" font from dafont ([link](https://www.dafont.com/press-start.font))
