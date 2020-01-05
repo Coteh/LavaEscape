@@ -25,7 +25,7 @@ A jump game made using Phaser 3 and TypeScript.
 1. To build for production, run `npm run prod` and then serve a HTTP server from the project root
 
 ## Limitations
-- No background music at the moment due to (self-imposed) time constraints
+- No audio (background music nor sound effects) at the moment
 - No high score table at the moment either
 - Not everything in the codebase has been modularized yet (e.g. cooldowns)
 - No automated testing
@@ -34,8 +34,9 @@ A jump game made using Phaser 3 and TypeScript.
 - Reintroduce the broken platform type (a platform that breaks when player steps on it)
 - Give player ability to wrap around stage
 - Add background music
+- Add sound effects
 - Add high score table with ability to submit name
-- Revamp chunking system to provide more variety of platforms
+- Revamp chunking system to provide more variety of platforms and placements
 - Pickup that allows player to jump higher (like holding space to charge jump but no time needed to charge)
 - Adjust game balance (lava speed, pickup spawn rate, etc.)
 - Add tests
