@@ -16,7 +16,7 @@
   "license": "ISC",
   "devDependencies": {
     "expose-loader": "0.7.5",
-    "ts-loader": "6.0.4",
+    "ts-loader": "7.0.1",
     "typescript": "3.5.2",
     "webpack": "4.35.2",
     "webpack-cli": "3.3.5",
