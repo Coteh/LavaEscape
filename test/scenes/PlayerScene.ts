@@ -12,11 +12,11 @@ export class PlayerScene extends Phaser.Scene {
 
     constructor() {
         super({
-            key: "PlayerScene",
+            key: "MainScene",
         });
     }
 
-    setOnSceneCreated(onSceneCreated: Function) {
+    setOnSceneCreated(onSceneCreated: Function): void {
         this.onSceneCreated = onSceneCreated;
     }
 
@@ -31,8 +31,23 @@ export class PlayerScene extends Phaser.Scene {
     }
 
     create(): void {
+        this.scene.launch("DebugScene");
+        this.events.emit("debugToggle");
+        if (this.onSceneCreated) {
+            this.onSceneCreated();
+        }
+        this.onTestStart(null); // call test start callback here as well in the case that test is invoked using `npm run dev-test`
+    }
+
+    onTestStart(testCallback): void {
+        // Destroy old objects if any
+        if (this.player)
+            this.player.destroy();
+        if (this.block)
+            this.block.destroy();
         // Setup player
         this.player = new Player(this, 300, 500, this.keys);
+        this.player.setPosition(0, 100);
         // Setup base platform
         this.block = new Block(
             this,
@@ -51,9 +66,9 @@ export class PlayerScene extends Phaser.Scene {
         this.add.existing(this.block);
         // make the center of this bottom block camera focus point
         this.cameras.main.centerOnX(getManualBounds(this.block).centerX);
-        if (this.onSceneCreated)
-            this.onSceneCreated(this.player, this.block);
-        this.player.setPosition(0, 150);
+        if (testCallback) {
+            testCallback(this.player, this.block);
+        }
     }
 
     onPlatformHit(player: Player, block: Block): void {
@@ -77,5 +92,8 @@ export class PlayerScene extends Phaser.Scene {
         if (!playerGrounded) {
             this.player.setGrounded(false);
         }
+        this.events.emit("debug", "grounded", this.player.isGrounded().toString());
+        this.events.emit("debug", "playerX", this.player.x.toString());
+        this.events.emit("debug", "playerY", this.player.y.toString());
     }
 }

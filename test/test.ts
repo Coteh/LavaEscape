@@ -19,7 +19,7 @@ switch (TEST_SCENE) {
 
 if (process.env.IS_DEBUG) {
     // TODO decouple MainScene from DebugScene
-    // scenes.push(DebugScene);
+    scenes.push(DebugScene);
 }
 
 window.onload = () => {

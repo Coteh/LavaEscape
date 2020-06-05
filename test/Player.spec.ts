@@ -2,7 +2,7 @@ import "phaser";
 
 import { Player } from "../src/gameobjects/Player";
 
-import { assert } from "chai";
+import { expect } from "chai";
 import { PlayerScene } from "./scenes/PlayerScene";
 import { Block } from "../src/gameobjects/Block";
 
@@ -27,10 +27,8 @@ describe("Player", () => {
             parent: "content",
             callbacks: {
                 postBoot: function (game) {
-                    scene = game.scene.getScene("PlayerScene") as PlayerScene;
-                    scene.setOnSceneCreated((_player: Player, _block: Block) => {
-                        player = _player;
-                        block = _block;
+                    scene = game.scene.getScene("MainScene") as PlayerScene;
+                    scene.setOnSceneCreated(() => {
                         done();
                     });
                 }
@@ -39,46 +37,67 @@ describe("Player", () => {
         new TestGame(config);
     });
 
+    beforeEach(() => {
+        scene.onTestStart((_player: Player, _block: Block) => {
+            player = _player;
+            block = _block;
+        });
+    });
+
     it("should bounce from ground", (done) => {
         var playerGroundedPos = block.getBounds().top - player.getBounds().height / 2;
-        assert(player.y < playerGroundedPos);
+        expect(player.y).to.be.lessThan(playerGroundedPos);
         player.setOnJump((player) => {
            setTimeout(() => {
-               assert(player.y < playerGroundedPos);
+               expect(player.y).to.be.lessThan(playerGroundedPos);
                done();
            }, 1000);
         });
     });
 
-    it("should fall down", () => {
-        assert.fail("Not implemented");
+    it("should fall down", (done) => {
+        let oldPlayerY: number;
+        let currStep: number = 0;
+        scene.game.events.on('step', () => {
+            switch (currStep) {
+                case 0:
+                    expect(player.y).to.be.lessThan(block.getBounds().top);
+                    oldPlayerY = player.y;
+                    break;
+                case 1:
+                    expect(player.y).to.be.greaterThan(oldPlayerY);
+                    done(); 
+                    break;
+            }
+            currStep++;
+        });
     });
 
     it("should be able to move left", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 
     it("should be able to move right", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 
     it("should be able to fast fall", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 
     it("should be able to jump higher if bouncing from fast fall", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 
     it("should be able to collect pickup", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 
     it("should be knocked back when hitting falling obstacles", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 
     it("should not be able to move past horizontal boundaries", () => {
-        assert.fail("Not implemented");
+        expect.fail("Not implemented");
     });
 });
