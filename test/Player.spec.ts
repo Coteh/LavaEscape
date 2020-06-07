@@ -12,10 +12,18 @@ class TestGame extends Phaser.Game {
     }
 }
 
+function dispatchKeyDown(keyCode) {
+    window.dispatchEvent(new KeyboardEvent("keydown", {
+        // @ts-ignore https://github.com/photonstorm/phaser/issues/2542
+        keyCode: keyCode
+    }));
+}
+
 describe("Player", () => {
     var scene: PlayerScene;
     var player: Player;
     var block: Block;
+    var keyDown: EventListenerOrEventListenerObject;
 
     before((done) => {
         const config: Phaser.Types.Core.GameConfig = {
@@ -42,6 +50,8 @@ describe("Player", () => {
             player = _player;
             block = _block;
         });
+        window.removeEventListener("keydown", keyDown);
+        scene.game.events.removeAllListeners("step");
     });
 
     it("should bounce from ground", (done) => {
@@ -73,12 +83,52 @@ describe("Player", () => {
         });
     });
 
-    it("should be able to move left", () => {
-        expect.fail("Not implemented");
+    it("should be able to move left", (done) => {
+        let isKeyPressed: boolean = false;
+        keyDown = function (e: KeyboardEvent) {
+            expect(e.keyCode).to.equal(37);
+            setTimeout(() => {
+                isKeyPressed = true;
+            }, 1000);
+        };
+        window.addEventListener('keydown', keyDown);
+        let currStep: number = 0;
+        scene.game.events.on('step', () => {
+            if (isKeyPressed) {
+                expect(player.x).to.be.lessThan(0);
+                done();
+            } else {
+                if (currStep === 0) {
+                    expect(player.x).to.be.equal(0);
+                    dispatchKeyDown(37);
+                }
+            }
+            currStep++;
+        });
     });
 
-    it("should be able to move right", () => {
-        expect.fail("Not implemented");
+    it("should be able to move right", (done) => {
+        let isKeyPressed: boolean = false;
+        keyDown = function (e: KeyboardEvent) {
+            expect(e.keyCode).to.equal(39);
+            setTimeout(() => {
+                isKeyPressed = true;
+            }, 1000);
+        }
+        window.addEventListener('keydown', keyDown);
+        let currStep: number = 0;
+        scene.game.events.on('step', () => {
+            if (isKeyPressed) {
+                expect(player.x).to.be.greaterThan(0);
+                done();
+            } else {
+                if (currStep === 0) {
+                    expect(player.x).to.be.equal(0);
+                    dispatchKeyDown(39);
+                }
+            }
+            currStep++;
+        });
     });
 
     it("should be able to fast fall", () => {
