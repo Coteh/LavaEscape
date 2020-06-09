@@ -18,12 +18,6 @@ class TestGame extends Phaser.Game {
     }
 }
 
-function delay(ms) {
-    return new Promise((resolve) => {
-        setTimeout(resolve, ms);
-    });
-}
-
 function dispatchKeyDown(keyCode) {
     window.dispatchEvent(new KeyboardEvent("keydown", {
         // @ts-ignore https://github.com/photonstorm/phaser/issues/2542
@@ -37,6 +31,15 @@ describe("Player", () => {
     var player: Player;
     var block: Block;
     var keyDown: EventListenerOrEventListenerObject;
+
+    function delay(ms) {
+        return new Promise((resolve) => {
+            scene.time.addEvent({
+                delay: ms,
+                callback: resolve
+            });
+        });
+    }
 
     before((done) => {
         const config: Phaser.Types.Core.GameConfig = {
@@ -73,8 +76,7 @@ describe("Player", () => {
         const playerJumpFunc = stub();
         expect(player.y).to.be.lessThan(playerGroundedPos);
         player.setOnJump(playerJumpFunc);
-        console.log("actualFps => " + game.loop.actualFps);
-        await delay(5000);
+        await delay(1000);
         expect(playerJumpFunc).to.have.been.calledOnce;
         expect(player.y).to.be.lessThan(playerGroundedPos);
     });
@@ -147,7 +149,7 @@ describe("Player", () => {
 
     it("should be able to fast fall", async () => {
         // Variables
-        const startPlayerY: number = 100;
+        const startPlayerY: number = -200;
         let oldPlayerY: number;
         // Space callback
         keyDown = function (e: KeyboardEvent) {
@@ -156,13 +158,13 @@ describe("Player", () => {
         window.addEventListener('keydown', keyDown);
         // Precondition
         player.y = startPlayerY;
-        await delay(1000);
+        await delay(2000);
         expect(player.y).to.be.greaterThan(startPlayerY);
         oldPlayerY = player.y;
         // Condition
         player.y = startPlayerY;
         dispatchKeyDown(32);
-        await delay(1000);
+        await delay(2000);
         expect(player.y).to.be.greaterThan(oldPlayerY);
     });
 
