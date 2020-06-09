@@ -72,10 +72,10 @@ export class PlayerScene extends Phaser.Scene {
     }
 
     onPlatformHit(player: Player, block: Block): void {
-        player.setGrounded(true);
         var blockBounds = getManualBounds(block);
         var playerBounds = getManualBounds(player);
         player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
+        player.setGrounded(true);
         block.executeBlockHitEffect();
     }
 
