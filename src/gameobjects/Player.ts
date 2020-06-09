@@ -120,6 +120,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         if (this.onJump !== undefined) {
             this.onJump(this);
         }
+        this.scene.events.emit("jump");
         this.unlock();
         this.delayedJump = false;
     }
