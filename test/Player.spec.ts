@@ -2,14 +2,25 @@ import "phaser";
 
 import { Player } from "../src/gameobjects/Player";
 
-import { expect } from "chai";
+import * as chai from "chai";
+import { stub } from "sinon";
+import * as sinonChai from "sinon-chai"
 import { PlayerScene } from "./scenes/PlayerScene";
 import { Block } from "../src/gameobjects/Block";
+
+chai.use(sinonChai);
+const expect = chai.expect;
 
 class TestGame extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
         super(config);
     }
+}
+
+function delay(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
 }
 
 function dispatchKeyDown(keyCode) {
@@ -54,15 +65,14 @@ describe("Player", () => {
         scene.game.events.removeAllListeners("step");
     });
 
-    it("should bounce from ground", (done) => {
-        var playerGroundedPos = block.getBounds().top - player.getBounds().height / 2;
+    it("should bounce from ground", async () => {
+        const playerGroundedPos = block.getBounds().top - player.getBounds().height / 2;
+        const playerJumpFunc = stub();
         expect(player.y).to.be.lessThan(playerGroundedPos);
-        player.setOnJump((player) => {
-           setTimeout(() => {
-               expect(player.y).to.be.lessThan(playerGroundedPos);
-               done();
-           }, 1000);
-        });
+        player.setOnJump(playerJumpFunc);
+        await delay(5000);
+        expect(playerJumpFunc).to.have.been.calledOnce;
+        expect(player.y).to.be.lessThan(playerGroundedPos);
     });
 
     it("should fall down", (done) => {
@@ -131,7 +141,28 @@ describe("Player", () => {
         });
     });
 
-    it("should be able to fast fall", () => {
+    it("should be able to fast fall", async () => {
+        // Variables
+        const startPlayerY: number = 100;
+        let oldPlayerY: number;
+        // Space callback
+        keyDown = function (e: KeyboardEvent) {
+            expect(e.keyCode).to.equal(32);
+        }
+        window.addEventListener('keydown', keyDown);
+        // Precondition
+        player.y = startPlayerY;
+        await delay(1000);
+        expect(player.y).to.be.greaterThan(startPlayerY);
+        oldPlayerY = player.y;
+        // Condition
+        player.y = startPlayerY;
+        dispatchKeyDown(32);
+        await delay(1000);
+        expect(player.y).to.be.greaterThan(oldPlayerY);
+    });
+
+    it("should stick to the ground if they fast fell", () => {
         expect.fail("Not implemented");
     });
 
