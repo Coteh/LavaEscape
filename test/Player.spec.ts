@@ -81,70 +81,38 @@ describe("Player", () => {
         expect(player.y).to.be.lessThan(playerGroundedPos);
     });
 
-    it("should fall down", (done) => {
-        let oldPlayerY: number;
-        let currStep: number = 0;
-        scene.game.events.on('step', () => {
-            switch (currStep) {
-                case 0:
-                    expect(player.y).to.be.lessThan(block.getBounds().top);
-                    oldPlayerY = player.y;
-                    break;
-                case 1:
-                    expect(player.y).to.be.greaterThan(oldPlayerY);
-                    done(); 
-                    break;
-            }
-            currStep++;
-        });
+    it("should fall down", async () => {
+        const playerJumpFunc = stub();
+        player.setOnJump(playerJumpFunc);
+        expect(player.y).to.be.lessThan(block.getBounds().top);
+        let oldPlayerY: number = player.y;
+        await delay(500);
+        expect(player.y).to.be.greaterThan(oldPlayerY);
+        expect(playerJumpFunc).not.to.have.been.called;
     });
 
-    it("should be able to move left", (done) => {
-        let isKeyPressed: boolean = false;
-        keyDown = function (e: KeyboardEvent) {
+    it("should be able to move left", async () => {
+        keyDown = stub().callsFake(function (e: KeyboardEvent) {
             expect(e.keyCode).to.equal(37);
-            setTimeout(() => {
-                isKeyPressed = true;
-            }, 1000);
-        };
-        window.addEventListener('keydown', keyDown);
-        let currStep: number = 0;
-        scene.game.events.on('step', () => {
-            if (isKeyPressed) {
-                expect(player.x).to.be.lessThan(0);
-                done();
-            } else {
-                if (currStep === 0) {
-                    expect(player.x).to.be.equal(0);
-                    dispatchKeyDown(37);
-                }
-            }
-            currStep++;
         });
+        window.addEventListener('keydown', keyDown);
+        expect(player.x).to.be.equal(0);
+        dispatchKeyDown(37);
+        expect(keyDown).to.have.been.calledOnce;
+        await delay(500);
+        expect(player.x).to.be.lessThan(0);
     });
 
-    it("should be able to move right", (done) => {
-        let isKeyPressed: boolean = false;
-        keyDown = function (e: KeyboardEvent) {
+    it("should be able to move right", async () => {
+        keyDown = stub().callsFake(function (e: KeyboardEvent) {
             expect(e.keyCode).to.equal(39);
-            setTimeout(() => {
-                isKeyPressed = true;
-            }, 1000);
-        }
-        window.addEventListener('keydown', keyDown);
-        let currStep: number = 0;
-        scene.game.events.on('step', () => {
-            if (isKeyPressed) {
-                expect(player.x).to.be.greaterThan(0);
-                done();
-            } else {
-                if (currStep === 0) {
-                    expect(player.x).to.be.equal(0);
-                    dispatchKeyDown(39);
-                }
-            }
-            currStep++;
         });
+        window.addEventListener('keydown', keyDown);
+        expect(player.x).to.be.equal(0);
+        dispatchKeyDown(39);
+        expect(keyDown).to.have.been.calledOnce;
+        await delay(500);
+        expect(player.x).to.be.greaterThan(0);
     });
 
     it("should be able to fast fall", async () => {
@@ -152,9 +120,9 @@ describe("Player", () => {
         const startPlayerY: number = -200;
         let oldPlayerY: number;
         // Space callback
-        keyDown = function (e: KeyboardEvent) {
+        keyDown = stub().callsFake(function (e: KeyboardEvent) {
             expect(e.keyCode).to.equal(32);
-        }
+        });
         window.addEventListener('keydown', keyDown);
         // Precondition
         player.y = startPlayerY;
@@ -164,12 +132,28 @@ describe("Player", () => {
         // Condition
         player.y = startPlayerY;
         dispatchKeyDown(32);
+        expect(keyDown).to.have.been.calledOnce;
         await delay(2000);
         expect(player.y).to.be.greaterThan(oldPlayerY);
     });
 
-    it("should stick to the ground if they fast fell", () => {
-        expect.fail("Not implemented");
+    it("should stick to the ground if they fast fell", async () => {
+        // Constants
+        const playerGroundedPos = block.getBounds().top - player.getBounds().height / 2;
+        // Space callback
+        keyDown = stub().callsFake(function (e: KeyboardEvent) {
+            expect(e.keyCode).to.equal(32);
+        });
+        window.addEventListener('keydown', keyDown);
+        // Precondition
+        expect(player.y).to.be.lessThan(playerGroundedPos);
+        dispatchKeyDown(32);
+        expect(keyDown).to.have.been.calledOnce;
+        await delay(2000);
+        expect(player.y).to.be.equal(playerGroundedPos);
+        // Condition
+        await delay(1000);
+        expect(player.y).to.be.equal(playerGroundedPos);
     });
 
     it("should be able to jump higher if bouncing from fast fall", () => {
