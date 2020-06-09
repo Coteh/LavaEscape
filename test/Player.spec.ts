@@ -7,6 +7,7 @@ import { stub } from "sinon";
 import * as sinonChai from "sinon-chai"
 import { PlayerScene } from "./scenes/PlayerScene";
 import { Block } from "../src/gameobjects/Block";
+import { Game } from "phaser";
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -31,6 +32,7 @@ function dispatchKeyDown(keyCode) {
 }
 
 describe("Player", () => {
+    var game: Game;
     var scene: PlayerScene;
     var player: Player;
     var block: Block;
@@ -45,7 +47,8 @@ describe("Player", () => {
             type: Phaser.AUTO,
             parent: "content",
             callbacks: {
-                postBoot: function (game) {
+                postBoot: function (_game) {
+                    game = _game;
                     scene = game.scene.getScene("MainScene") as PlayerScene;
                     scene.setOnSceneCreated(() => {
                         done();
@@ -70,6 +73,7 @@ describe("Player", () => {
         const playerJumpFunc = stub();
         expect(player.y).to.be.lessThan(playerGroundedPos);
         player.setOnJump(playerJumpFunc);
+        console.log("actualFps => " + game.loop.actualFps);
         await delay(5000);
         expect(playerJumpFunc).to.have.been.calledOnce;
         expect(player.y).to.be.lessThan(playerGroundedPos);
