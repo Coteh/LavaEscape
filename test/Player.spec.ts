@@ -211,7 +211,7 @@ describe("Player", () => {
         // Condition
         dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
-        await delay(2000);
+        await waitForGameEvent("grounded");
         expect(player.y).to.be.equal(playerGroundedPos);
         dispatchKeyUp(32);
         expect(keyUp).to.have.been.calledOnce;

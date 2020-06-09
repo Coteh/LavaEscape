@@ -130,6 +130,9 @@ export class Player extends Phaser.GameObjects.Sprite {
      */
     public setGrounded(condition: boolean) {
         this.grounded = condition;
+        if (condition) {
+            this.scene.events.emit("grounded");
+        }
     }
 
     public applyForce(xForce: number, yForce: number) {
