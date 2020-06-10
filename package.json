@@ -1,28 +1,30 @@
 {
-  "name": "lava-escape",
-  "version": "1.0.0",
-  "description": "Jump game made using Phaser 3 and TypeScript",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Coteh/LavaEscape.git"
-  },
-  "main": "index.js",
-  "scripts": {
-    "dev": "webpack-dev-server --env.NODE_ENV=dev",
-    "prod": "webpack --mode=production",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "James Cote (Coteh)",
-  "license": "ISC",
-  "devDependencies": {
-    "expose-loader": "0.7.5",
-    "ts-loader": "6.0.4",
-    "typescript": "3.5.2",
-    "webpack": "4.35.2",
-    "webpack-cli": "3.3.5",
-    "webpack-dev-server": "3.7.2"
-  },
-  "dependencies": {
-    "phaser": "^3.20.1"
-  }
+    "name": "lava-escape",
+    "version": "1.0.0",
+    "description": "Jump game made using Phaser 3 and TypeScript",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Coteh/LavaEscape.git"
+    },
+    "main": "index.js",
+    "scripts": {
+        "dev": "webpack-dev-server --env.NODE_ENV=dev",
+        "prod": "webpack --mode=production",
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "format": "prettier --config ./.prettierrc.json --write ."
+    },
+    "author": "James Cote (Coteh)",
+    "license": "ISC",
+    "devDependencies": {
+        "expose-loader": "0.7.5",
+        "prettier": "2.0.5",
+        "ts-loader": "6.0.4",
+        "typescript": "3.5.2",
+        "webpack": "4.35.2",
+        "webpack-cli": "3.3.5",
+        "webpack-dev-server": "3.7.2"
+    },
+    "dependencies": {
+        "phaser": "^3.20.1"
+    }
 }

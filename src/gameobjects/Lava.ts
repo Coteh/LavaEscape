@@ -1,4 +1,4 @@
-import { Player } from "./Player";
+import { Player } from './Player';
 
 export class Lava extends Phaser.GameObjects.Rectangle {
     private player: Player;
@@ -12,7 +12,12 @@ export class Lava extends Phaser.GameObjects.Rectangle {
     private gameOver: boolean;
     private timeToInactive: number = 0;
 
-    constructor(scene: Phaser.Scene, y: number, height: number, player: Player) {
+    constructor(
+        scene: Phaser.Scene,
+        y: number,
+        height: number,
+        player: Player
+    ) {
         super(scene, 250, y, 2000, height, 0xff0000, 1); // TODO scale lava height based on game dimensions
         this.player = player;
     }
@@ -24,12 +29,18 @@ export class Lava extends Phaser.GameObjects.Rectangle {
             }
             this.timeToInactive += delta;
         }
-        var playerLava = (this.y - this.player.y);
-        this.scene.events.emit("debug", "playerlava", playerLava.toString());
-        var lavaSpeed = (this.movingDown) ? this.lavaReductionSpeed : Math.abs(playerLava / this.lavaForgiveness);
-        this.scene.events.emit("debug", "lavaSpeed", lavaSpeed.toString());
+        var playerLava = this.y - this.player.y;
+        this.scene.events.emit('debug', 'playerlava', playerLava.toString());
+        var lavaSpeed = this.movingDown
+            ? this.lavaReductionSpeed
+            : Math.abs(playerLava / this.lavaForgiveness);
+        this.scene.events.emit('debug', 'lavaSpeed', lavaSpeed.toString());
         this.y -= 0.3 * lavaSpeed * delta;
-        this.scene.events.emit("debug", "lavaForgiveness", this.lavaForgiveness.toString());
+        this.scene.events.emit(
+            'debug',
+            'lavaForgiveness',
+            this.lavaForgiveness.toString()
+        );
         if (this.y > this.movingDownDist) {
             this.movingDown = false;
         }
