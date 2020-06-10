@@ -1,5 +1,5 @@
-import { Scene } from "phaser";
-import { Player } from "./Player";
+import { Scene } from 'phaser';
+import { Player } from './Player';
 
 const NEW_BACKGROUND_THRESHOLD: number = -10;
 const SCROLLING_BG_SLOWNESS_FACTOR: number = 100;
@@ -9,12 +9,14 @@ export class ScrollingBackground extends Phaser.GameObjects.GameObject {
     private imageName: string;
     private player: Player;
     private oldPlayerY: number;
-    
+
     constructor(scene: Scene, imageName: string) {
-        super(scene, "scrolling_background");
+        super(scene, 'scrolling_background');
         this.backgrounds = [];
         this.imageName = imageName;
-        var backgroundOffset: number = this.scene.cameras.main.height - this.scene.textures.get(imageName).get(0).height;
+        var backgroundOffset: number =
+            this.scene.cameras.main.height -
+            this.scene.textures.get(imageName).get(0).height;
         this.addBackground(backgroundOffset);
     }
 
@@ -33,12 +35,15 @@ export class ScrollingBackground extends Phaser.GameObjects.GameObject {
 
     update(time: number, delta: number): void {
         var playerYDiff = this.player.y - this.oldPlayerY;
-        this.backgrounds.forEach(bg => {
+        this.backgrounds.forEach((bg) => {
             bg.y -= playerYDiff / SCROLLING_BG_SLOWNESS_FACTOR;
         });
         var topBackground: number = this.backgrounds.length - 1;
         if (this.backgrounds[topBackground].y >= NEW_BACKGROUND_THRESHOLD) {
-            this.addBackground(-this.backgrounds[topBackground].displayHeight - this.backgrounds[topBackground].y);
+            this.addBackground(
+                -this.backgrounds[topBackground].displayHeight -
+                    this.backgrounds[topBackground].y
+            );
         }
         if (this.backgrounds[0].y >= this.backgrounds[0].displayHeight * 2) {
             this.backgrounds[0].destroy(true);

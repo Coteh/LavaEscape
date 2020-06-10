@@ -1,5 +1,5 @@
-import { Player } from "../Player";
-import { Block } from "../Block";
+import { Player } from '../Player';
+import { Block } from '../Block';
 
 export class BlockComponent {
     protected player: Player;
@@ -13,6 +13,5 @@ export class BlockComponent {
         this.block = block;
     }
 
-    public runEffect() {
-    }
+    public runEffect() {}
 }

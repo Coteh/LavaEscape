@@ -1,7 +1,7 @@
-import { BlockComponent } from "./blocks/BlockComponent";
-import { Player } from "./Player";
-import { CollideFuncs } from "../util/CollideFuncs";
-import { getManualBounds } from "../util/Bounds";
+import { BlockComponent } from './blocks/BlockComponent';
+import { Player } from './Player';
+import { CollideFuncs } from '../util/CollideFuncs';
+import { getManualBounds } from '../util/Bounds';
 
 export class Block extends Phaser.GameObjects.Sprite {
     private jumpFactor: number;
@@ -12,7 +12,17 @@ export class Block extends Phaser.GameObjects.Sprite {
     private playerGrounded: boolean;
     private deltaX: number = 0;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, width: number, height: number, sprite: string, jumpFactor: number, component: BlockComponent, speed: number) {
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        width: number,
+        height: number,
+        sprite: string,
+        jumpFactor: number,
+        component: BlockComponent,
+        speed: number
+    ) {
         super(scene, x, y, sprite);
         this.setSize(width, height);
         this.setDisplaySize(width, height);
@@ -46,7 +56,10 @@ export class Block extends Phaser.GameObjects.Sprite {
         }
         var playerBounds = getManualBounds(this.player);
         blockBounds = getManualBounds(this);
-        if (CollideFuncs.hitTop(playerBounds, blockBounds) && this.player.getSpeed() > 0) {
+        if (
+            CollideFuncs.hitTop(playerBounds, blockBounds) &&
+            this.player.getSpeed() > 0
+        ) {
             if (!this.playerGrounded) {
                 this.playerCollideFunc(this.player, this);
             }

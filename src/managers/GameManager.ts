@@ -1,28 +1,32 @@
-import { Scene } from "phaser";
+import { Scene } from 'phaser';
 
 export class GameManager {
     private scene: Scene;
     private highScore: number = 0;
     private gameOver: boolean;
     private tutorialsCompleted: number = 0;
-    
+
     constructor(scene: Scene) {
         this.scene = scene;
     }
 
     public init() {
-        this.scene.events.emit("debug", "highscore", this.highScore.toString());
+        this.scene.events.emit('debug', 'highscore', this.highScore.toString());
         this.gameOver = false;
-        this.scene.registry.set("beatHighscore", this.highScore === 0);
+        this.scene.registry.set('beatHighscore', this.highScore === 0);
     }
 
-    public updateHighScore(): void {        
-        var score: number = this.scene.registry.get("score");
+    public updateHighScore(): void {
+        var score: number = this.scene.registry.get('score');
         if (score > this.highScore) {
             this.highScore = score;
-            this.scene.registry.set("beatHighscore", true);
-            this.scene.registry.set("highscore", this.highScore);
-            this.scene.events.emit("debug", "highscore", this.highScore.toString());
+            this.scene.registry.set('beatHighscore', true);
+            this.scene.registry.set('highscore', this.highScore);
+            this.scene.events.emit(
+                'debug',
+                'highscore',
+                this.highScore.toString()
+            );
         }
     }
 

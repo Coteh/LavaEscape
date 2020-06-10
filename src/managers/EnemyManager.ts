@@ -1,6 +1,6 @@
-import { Enemy } from "../gameobjects/Enemy";
-import { Scene } from "phaser";
-import { Player } from "../gameobjects/Player";
+import { Enemy } from '../gameobjects/Enemy';
+import { Scene } from 'phaser';
+import { Player } from '../gameobjects/Player';
 
 export class EnemyManager {
     private scene: Scene;
@@ -16,7 +16,14 @@ export class EnemyManager {
     }
 
     spawnEnemy(): Enemy {
-        var enemy = new Enemy(this.scene, this.player.x, this.player.y - 1000, 100, 100, this.randomSpeed());
+        var enemy = new Enemy(
+            this.scene,
+            this.player.x,
+            this.player.y - 1000,
+            100,
+            100,
+            this.randomSpeed()
+        );
         this.scene.add.existing(enemy);
         return enemy;
     }

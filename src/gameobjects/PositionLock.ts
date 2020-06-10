@@ -1,6 +1,8 @@
-import { Scene } from "phaser";
+import { Scene } from 'phaser';
 
-export type LockableObject = Phaser.GameObjects.Rectangle | Phaser.GameObjects.Sprite;
+export type LockableObject =
+    | Phaser.GameObjects.Rectangle
+    | Phaser.GameObjects.Sprite;
 
 export interface LockObject {
     x: number;
@@ -12,8 +14,13 @@ export class PositionLock extends Phaser.GameObjects.GameObject {
     private lockObject: LockObject;
     private lockCenter: boolean;
 
-    constructor(scene: Scene, gameObject: LockableObject, lockObject: LockObject, lockCenter: boolean = false) {
-        super(scene, "position_lock");
+    constructor(
+        scene: Scene,
+        gameObject: LockableObject,
+        lockObject: LockObject,
+        lockCenter: boolean = false
+    ) {
+        super(scene, 'position_lock');
         this.gameObject = gameObject;
         this.lockObject = lockObject;
         this.lockCenter = lockCenter;

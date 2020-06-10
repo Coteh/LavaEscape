@@ -1,16 +1,19 @@
-import { Player } from "../gameobjects/Player";
-import { Block } from "../gameobjects/Block";
-import { Lava } from "../gameobjects/Lava";
-import { RegularBlockComponent } from "../gameobjects/blocks/RegularBlockComponent";
-import { CollideFuncs } from "../util/CollideFuncs";
-import { AbstractChunkFactory, ChunkResult } from "../factory/chunks/AbstractChunkFactory";
-import { GameManager } from "../managers/GameManager";
-import { Enemy } from "../gameobjects/Enemy";
-import { EnemyManager } from "../managers/EnemyManager";
-import { Pickup } from "../gameobjects/Pickup";
-import { BlockChunk, destroyChunk } from "../types/BlockChunk";
-import { getManualBounds } from "../util/Bounds";
-import { ScrollingBackground } from "../gameobjects/ScrollingBackground";
+import { Player } from '../gameobjects/Player';
+import { Block } from '../gameobjects/Block';
+import { Lava } from '../gameobjects/Lava';
+import { RegularBlockComponent } from '../gameobjects/blocks/RegularBlockComponent';
+import { CollideFuncs } from '../util/CollideFuncs';
+import {
+    AbstractChunkFactory,
+    ChunkResult,
+} from '../factory/chunks/AbstractChunkFactory';
+import { GameManager } from '../managers/GameManager';
+import { Enemy } from '../gameobjects/Enemy';
+import { EnemyManager } from '../managers/EnemyManager';
+import { Pickup } from '../gameobjects/Pickup';
+import { BlockChunk, destroyChunk } from '../types/BlockChunk';
+import { getManualBounds } from '../util/Bounds';
+import { ScrollingBackground } from '../gameobjects/ScrollingBackground';
 
 const SPEED_UP_TIME: number = 10000;
 const ENEMY_COOLDOWN_MAX: number = 1000;
@@ -35,62 +38,77 @@ export class MainScene extends Phaser.Scene {
     private right: number;
     private centerPos: number;
 
-    private keys: Map<string,Phaser.Input.Keyboard.Key>;
-    
+    private keys: Map<string, Phaser.Input.Keyboard.Key>;
+
     private chunkFactory: AbstractChunkFactory;
     private enemyManager: EnemyManager;
 
     private enemyModulus: number = 10;
     private enemyCooldown: number = 0;
-    
+
     private pickups: Pickup[];
 
     private background: ScrollingBackground;
 
     private numberOfBlocksHit: number = 0;
     private tutorialInProgress: boolean = false;
-    
+
     constructor() {
         super({
-            key: "MainScene"
+            key: 'MainScene',
         });
         this.blockChunks = [];
         this.pickups = [];
     }
-    
+
     preload(): void {
-        this.load.image("player", "./assets/img/Player.png");
-        this.load.image("rock", "./assets/img/Rock.png");
-        this.load.image("lava_sink", "./assets/img/LavaDial.png");
-        this.load.image("reg_platform", "./assets/img/Platform.png");
-        this.load.image("base_platform", "./assets/img/BasePlatform.png");
-        this.load.image("background", "./assets/img/mountain.jpg");
+        this.load.image('player', './assets/img/Player.png');
+        this.load.image('rock', './assets/img/Rock.png');
+        this.load.image('lava_sink', './assets/img/LavaDial.png');
+        this.load.image('reg_platform', './assets/img/Platform.png');
+        this.load.image('base_platform', './assets/img/BasePlatform.png');
+        this.load.image('background', './assets/img/mountain.jpg');
         this.keys = new Map([
-            ["LEFT", this.input.keyboard.addKey("LEFT")],
-            ["RIGHT", this.input.keyboard.addKey("RIGHT")],
-            ["SPACE", this.input.keyboard.addKey("SPACE")],
+            ['LEFT', this.input.keyboard.addKey('LEFT')],
+            ['RIGHT', this.input.keyboard.addKey('RIGHT')],
+            ['SPACE', this.input.keyboard.addKey('SPACE')],
         ]);
         if (process.env.IS_DEBUG) {
-            this.keys.set("D", this.input.keyboard.addKey("D"));
+            this.keys.set('D', this.input.keyboard.addKey('D'));
         }
         // TODO add loading screen
         // this.load.audio("music", ["./assets/audio/red_mountain.mp3"]);
     }
-    
+
     create(): void {
-        this.scene.launch("HUDScene");
-        this.scene.launch("DebugScene");
+        this.scene.launch('HUDScene');
+        this.scene.launch('DebugScene');
         // Initialize scrolling background
-        this.background = new ScrollingBackground(this, "background");
+        this.background = new ScrollingBackground(this, 'background');
         // Setup player
         this.player = new Player(this, 300, 500, this.keys);
         this.player.setOnJump(this.onJump.bind(this));
         this.background.followPlayer(this.player);
         // Initialize chunk factory
-        this.chunkFactory = new AbstractChunkFactory(this, this.player, this.onPlatformHit.bind(this), this.onPickup.bind(this));
+        this.chunkFactory = new AbstractChunkFactory(
+            this,
+            this.player,
+            this.onPlatformHit.bind(this),
+            this.onPickup.bind(this)
+        );
         // block "chunk" of just the bottom block
         var blocks: Block[] = [];
-        var block = new Block(this, 200, 600, 1000, 500, "base_platform", 1, new RegularBlockComponent(this.player), 0);
+        var block = new Block(
+            this,
+            200,
+            600,
+            1000,
+            500,
+            'base_platform',
+            1,
+            new RegularBlockComponent(this.player),
+            0
+        );
         block.setDisplaySize(800, 500);
         block.setPlayerReference(this.player);
         block.setPlayerCollideFunc(this.onPlatformHit.bind(this));
@@ -108,11 +126,14 @@ export class MainScene extends Phaser.Scene {
         this.chunkStartPos = 200;
         this.left = -200;
         this.right = this.cameras.main.width + this.left;
-        var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
+        var chunk: ChunkResult = this.chunkFactory.createChunk(
+            this.left,
+            this.chunkStartPos
+        );
         this.blockChunks.push({
             blocks: chunk.blocks,
             chunkStart: this.chunkStartPos,
-            chunkHeight: this.chunkHeight
+            chunkHeight: this.chunkHeight,
         });
         chunk.pickups.forEach((pickup) => {
             this.pickups.push(pickup);
@@ -123,16 +144,16 @@ export class MainScene extends Phaser.Scene {
         // this.sound.play("music");
         this.enemies = [];
         this.enemyManager = new EnemyManager(this, this.player);
-        this.gameManager = this.registry.get("gameManager");
+        this.gameManager = this.registry.get('gameManager');
         if (!this.gameManager) {
             this.gameManager = new GameManager(this);
-            this.registry.set("gameManager", this.gameManager);
+            this.registry.set('gameManager', this.gameManager);
         }
         this.gameManager.init();
-        this.events.on("updateScore", () => {
+        this.events.on('updateScore', () => {
             this.gameManager.updateHighScore();
         });
-        this.events.on("completeTutorial", (tutorialNum) => {
+        this.events.on('completeTutorial', (tutorialNum) => {
             this.gameManager.setNumberOfTutorialsCompleted(tutorialNum);
             this.tutorialInProgress = false;
         });
@@ -145,21 +166,28 @@ export class MainScene extends Phaser.Scene {
         player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
         block.executeBlockHitEffect();
         this.numberOfBlocksHit++;
-        if (this.numberOfBlocksHit > 10 && this.gameManager.getNumberOfTutorialsCompleted() < 1 && !this.tutorialInProgress) {
-            this.events.emit("tutorialStart", 1);
+        if (
+            this.numberOfBlocksHit > 10 &&
+            this.gameManager.getNumberOfTutorialsCompleted() < 1 &&
+            !this.tutorialInProgress
+        ) {
+            this.events.emit('tutorialStart', 1);
             this.tutorialInProgress = true;
         }
     }
-    
+
     onPickup() {
         this.lava.moveDown(200);
     }
 
     willEnemySpawn(): boolean {
         var rand = Math.round(Math.random() * this.enemyModulus);
-        return (rand % this.enemyModulus == this.enemyModulus / 2 && this.enemyCooldown == 0);
+        return (
+            rand % this.enemyModulus == this.enemyModulus / 2 &&
+            this.enemyCooldown == 0
+        );
     }
-    
+
     onJump(player: Player) {
         if (this.willEnemySpawn()) {
             var enemy = this.enemyManager.spawnEnemy();
@@ -170,9 +198,13 @@ export class MainScene extends Phaser.Scene {
 
     update(time: number, delta: number): void {
         this.elapsedTime += delta;
-        this.events.emit("debug", "grounded", this.player.isGrounded().toString());
-        this.events.emit("debug", "playerX", this.player.x.toString());
-        this.events.emit("debug", "playerY", this.player.y.toString());
+        this.events.emit(
+            'debug',
+            'grounded',
+            this.player.isGrounded().toString()
+        );
+        this.events.emit('debug', 'playerX', this.player.x.toString());
+        this.events.emit('debug', 'playerY', this.player.y.toString());
         if (!this.gameManager.isGameOver()) {
             this.player.update(time, delta);
         }
@@ -180,8 +212,8 @@ export class MainScene extends Phaser.Scene {
         var blockChunkIndex: number = 0;
         var highestCullChunk: number = -1;
         var lavaBounds = getManualBounds(this.lava);
-        this.blockChunks.forEach(blockChunk => {
-            blockChunk.blocks.forEach(block => {
+        this.blockChunks.forEach((blockChunk) => {
+            blockChunk.blocks.forEach((block) => {
                 if (block.active) {
                     block.update(time, delta);
                     if (block.hasPlayerGrounded()) {
@@ -189,7 +221,10 @@ export class MainScene extends Phaser.Scene {
                     }
                 }
             });
-            if (this.lava.y + lavaBounds.height < blockChunk.chunkStart - blockChunk.chunkHeight * 4) {
+            if (
+                this.lava.y + lavaBounds.height <
+                blockChunk.chunkStart - blockChunk.chunkHeight * 4
+            ) {
                 destroyChunk(blockChunk);
                 highestCullChunk = blockChunkIndex;
             }
@@ -206,12 +241,15 @@ export class MainScene extends Phaser.Scene {
         }
 
         if (this.player.y < this.chunkStartPos - this.chunkHeight) {
-            this.chunkStartPos -= this.chunkHeight + (this.chunkHeight / 2);
-            var chunk: ChunkResult = this.chunkFactory.createChunk(this.left, this.chunkStartPos);
+            this.chunkStartPos -= this.chunkHeight + this.chunkHeight / 2;
+            var chunk: ChunkResult = this.chunkFactory.createChunk(
+                this.left,
+                this.chunkStartPos
+            );
             this.blockChunks.push({
                 blocks: chunk.blocks,
                 chunkStart: this.chunkStartPos,
-                chunkHeight: this.chunkHeight
+                chunkHeight: this.chunkHeight,
             });
             chunk.pickups.forEach((pickup) => {
                 this.pickups.push(pickup);
@@ -224,7 +262,7 @@ export class MainScene extends Phaser.Scene {
             this.cameras.main.stopFollow();
             this.player.destroy(true);
             this.lava.setGameOverSpeed();
-            this.events.emit("gameOver");
+            this.events.emit('gameOver');
             this.gameManager.setGameOver(true);
         }
 
@@ -233,7 +271,7 @@ export class MainScene extends Phaser.Scene {
         } else if (this.player.x + playerBounds.width / 2 > this.right) {
             this.player.x = this.right - playerBounds.width / 2;
         }
-        
+
         playerBounds = getManualBounds(this.player);
         this.enemies.forEach((enemy) => {
             if (!enemy.active) {
@@ -252,7 +290,7 @@ export class MainScene extends Phaser.Scene {
                 enemy.destroy(true);
             }
         });
-        
+
         playerBounds = getManualBounds(this.player);
         this.pickups.forEach((pickup) => {
             if (!pickup.active) {
@@ -269,22 +307,33 @@ export class MainScene extends Phaser.Scene {
         if (!this.gameManager.isGameOver()) {
             this.cameras.main.centerOnY(this.player.y);
         }
-        
-        this.events.emit("debug", "lavaSpeedupFactor", this.lavaSpeedupFactor.toString());
-        this.events.emit("debug", "lavaSpeedDivisor", this.lavaSpeedDivisor.toString());
+
+        this.events.emit(
+            'debug',
+            'lavaSpeedupFactor',
+            this.lavaSpeedupFactor.toString()
+        );
+        this.events.emit(
+            'debug',
+            'lavaSpeedDivisor',
+            this.lavaSpeedDivisor.toString()
+        );
         if (this.elapsedTime > this.speedUpTime) {
             this.lava.speedUp(this.lavaSpeedupFactor);
-            this.enemyModulus = (this.enemyModulus > MIN_ENEMY_MODULUS) ? this.enemyModulus - 2 : this.enemyModulus; // TODO have a separate speedup timer for enemy spawn likelihood increase
+            this.enemyModulus =
+                this.enemyModulus > MIN_ENEMY_MODULUS
+                    ? this.enemyModulus - 2
+                    : this.enemyModulus; // TODO have a separate speedup timer for enemy spawn likelihood increase
             this.speedUpTime += SPEED_UP_TIME;
             if (this.lavaSpeedupFactor > 100) {
                 this.lavaSpeedupFactor /= this.lavaSpeedDivisor;
                 this.lavaSpeedDivisor *= 2.5;
             }
         }
-        
-        var debugKey = this.keys.get("D");
+
+        var debugKey = this.keys.get('D');
         if (debugKey && this.input.keyboard.checkDown(debugKey, 1000)) {
-            this.events.emit("debugToggle");
+            this.events.emit('debugToggle');
         }
 
         // Add Cooldown class for enemies and lava speedup
