@@ -190,13 +190,10 @@ describe('Player', () => {
         expect(player.y).to.be.lessThan(playerGroundedPos);
         dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
-        console.log(player.getSpeed(), player.y, game.loop.delta);
         await delay(2000);
-        console.log(player.getSpeed(), player.y, game.loop.delta);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Condition
         await delay(1000);
-        console.log(player.getSpeed(), player.y, game.loop.delta);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Cleanup
         dispatchKeyUp(32);
@@ -263,7 +260,6 @@ describe('Player', () => {
         expect(keyUp).to.have.been.calledOnce;
         // Ensure player has jumped before waiting to see if it grounded again
         await waitForGameEvent('jump');
-        console.log('jumped!');
         // Test passes when player eventually lands again before test timeout
         await waitForGameEvent('grounded');
     });
