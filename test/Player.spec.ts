@@ -186,6 +186,7 @@ describe('Player', () => {
         expect(player.y).to.be.equal(playerGroundedPos);
         // Condition
         await delay(1000);
+        console.log(game.loop.delta);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Cleanup
         dispatchKeyUp(32);
