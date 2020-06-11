@@ -14,7 +14,8 @@
         "dev-test": "webpack-dev-server --env.NODE_ENV=test --env.TEST_SCENE=player",
         "format": "prettier --config ./.prettierrc.json --write .",
         "prod": "webpack --mode=production",
-        "test": "karma start --single-run"
+        "test": "karma start --single-run",
+        "test-view": "TEST_TYPE=view karma start --single-run"
     },
     "dependencies": {
         "phaser": "^3.20.1"

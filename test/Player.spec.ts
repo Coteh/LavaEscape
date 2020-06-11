@@ -7,7 +7,7 @@ import { stub } from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { PlayerScene } from './scenes/PlayerScene';
 import { Block } from '../src/gameobjects/Block';
-import { Game } from 'phaser';
+import { Game, GameObjects } from 'phaser';
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -42,6 +42,7 @@ describe('Player', () => {
     var block: Block;
     var keyDown: EventListenerOrEventListenerObject;
     var keyUp: EventListenerOrEventListenerObject;
+    var testText: GameObjects.Text;
 
     function delay(ms) {
         return new Promise((resolve) => {
@@ -66,7 +67,7 @@ describe('Player', () => {
             width: 800,
             height: 600,
             scene: [PlayerScene],
-            type: Phaser.HEADLESS,
+            type: Phaser.AUTO, // TODO set to HEADLESS from env var
             parent: 'content',
             callbacks: {
                 postBoot: function (_game) {
@@ -82,7 +83,7 @@ describe('Player', () => {
         new TestGame(config);
     });
 
-    beforeEach(() => {
+    beforeEach(function () {
         scene.onTestStart((_player: Player, _block: Block) => {
             player = _player;
             block = _block;
@@ -90,6 +91,9 @@ describe('Player', () => {
         window.removeEventListener('keydown', keyDown);
         window.removeEventListener('keyup', keyUp);
         scene.game.events.removeAllListeners('grounded');
+        testText = scene.add.text(0, 30, this.currentTest.title, {
+            color: '#fff',
+        });
     });
 
     it('should bounce from ground', async () => {
@@ -123,6 +127,8 @@ describe('Player', () => {
         expect(keyDown).to.have.been.calledOnce;
         await delay(500);
         expect(player.x).to.be.lessThan(0);
+        // Cleanup
+        dispatchKeyUp(37);
     });
 
     it('should be able to move right', async () => {
@@ -135,6 +141,8 @@ describe('Player', () => {
         expect(keyDown).to.have.been.calledOnce;
         await delay(500);
         expect(player.x).to.be.greaterThan(0);
+        // Cleanup
+        dispatchKeyUp(39);
     });
 
     it('should be able to fast fall', async () => {
@@ -232,32 +240,33 @@ describe('Player', () => {
 
     // TODO - works on its own but cannot coexist with other tests because delta spikes really high when it gets to this test
     // fix framerate issues and keep the player speed consistent
-    // it("should eventually fall down again after charged jump", async () => {
-    //     // Constants
-    //     const playerGroundedPos = block.getBounds().top - player.getBounds().height / 2;
-    //     // Space callbacks
-    //     keyDown = stub().callsFake(function (e: KeyboardEvent) {
-    //         expect(e.keyCode).to.equal(32);
-    //     });
-    //     keyUp = stub().callsFake(function (e: KeyboardEvent) {
-    //         expect(e.keyCode).to.equal(32);
-    //     });
-    //     window.addEventListener('keydown', keyDown);
-    //     window.addEventListener('keyup', keyUp);
-    //     // Precondition
-    //     player.y = -100;
-    //     dispatchKeyDown(32);
-    //     expect(keyDown).to.have.been.calledOnce;
-    //     await waitForGameEvent("grounded");
-    //     expect(player.y).to.be.equal(playerGroundedPos);
-    //     dispatchKeyUp(32);
-    //     expect(keyUp).to.have.been.calledOnce;
-    //     // Ensure player has jumped before waiting to see if it grounded again
-    //     await waitForGameEvent("jump");
-    //     console.log("jumped!");
-    //     // Test passes when player eventually lands again before test timeout
-    //     await waitForGameEvent("grounded");
-    // });
+    it('should eventually fall down again after charged jump', async () => {
+        // Constants
+        const playerGroundedPos =
+            block.getBounds().top - player.getBounds().height / 2;
+        // Space callbacks
+        keyDown = stub().callsFake(function (e: KeyboardEvent) {
+            expect(e.keyCode).to.equal(32);
+        });
+        keyUp = stub().callsFake(function (e: KeyboardEvent) {
+            expect(e.keyCode).to.equal(32);
+        });
+        window.addEventListener('keydown', keyDown);
+        window.addEventListener('keyup', keyUp);
+        // Precondition
+        player.y = -100;
+        dispatchKeyDown(32);
+        expect(keyDown).to.have.been.calledOnce;
+        await waitForGameEvent('grounded');
+        expect(player.y).to.be.equal(playerGroundedPos);
+        dispatchKeyUp(32);
+        expect(keyUp).to.have.been.calledOnce;
+        // Ensure player has jumped before waiting to see if it grounded again
+        await waitForGameEvent('jump');
+        console.log('jumped!');
+        // Test passes when player eventually lands again before test timeout
+        await waitForGameEvent('grounded');
+    });
 
     // TODO either:
     // - decouple logic these three cases test for from MainScene
@@ -275,4 +284,8 @@ describe('Player', () => {
     // it("should not be able to move past horizontal boundaries", () => {
     //     expect.fail("Not implemented");
     // });
+
+    afterEach(() => {
+        testText.destroy();
+    });
 });
