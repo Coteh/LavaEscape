@@ -1,5 +1,5 @@
-import { Player } from "../Player";
-import { BlockComponent } from "./BlockComponent";
+import { Player } from '../Player';
+import { BlockComponent } from './BlockComponent';
 
 export class BrokenBlockComponent extends BlockComponent {
     constructor(player: Player) {

@@ -1,19 +1,25 @@
-import { Scene } from "phaser";
+import { Scene } from 'phaser';
 
-const NORMAL_COLOR: string = "#fff";
-const HOVER_COLOR: string = "#ff0";
-const HOLD_COLOR: string = "#0f0";
+const NORMAL_COLOR: string = '#fff';
+const HOVER_COLOR: string = '#ff0';
+const HOLD_COLOR: string = '#0f0';
 
 export class BaseButton extends Phaser.GameObjects.Text {
-    constructor(scene: Scene, x: number, y: number, text: string, callback: Function) {
+    constructor(
+        scene: Scene,
+        x: number,
+        y: number,
+        text: string,
+        callback: Function
+    ) {
         super(scene, x, y, text, {
-            color: NORMAL_COLOR
+            color: NORMAL_COLOR,
         });
         this.setInteractive();
-        this.on("pointerup", callback);
-        this.on("pointerover", this.highlightButton);
-        this.on("pointerout", this.unhighlightButton);
-        this.on("pointerdown", this.holdDownButton);
+        this.on('pointerup', callback);
+        this.on('pointerover', this.highlightButton);
+        this.on('pointerout', this.unhighlightButton);
+        this.on('pointerdown', this.holdDownButton);
     }
 
     highlightButton() {

@@ -1,6 +1,6 @@
-import "phaser";
-import { DebugScene } from "../src/scenes/DebugScene";
-import { PlayerScene } from "./scenes/PlayerScene";
+import 'phaser';
+import { DebugScene } from '../src/scenes/DebugScene';
+import { PlayerScene } from './scenes/PlayerScene';
 
 class TestGame extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
@@ -12,7 +12,7 @@ var scenes: Function[] = [];
 
 // @ts-ignore webpack define
 switch (TEST_SCENE) {
-    case "player":
+    case 'player':
         scenes.push(PlayerScene);
         break;
 }
@@ -24,12 +24,12 @@ if (process.env.IS_DEBUG) {
 
 window.onload = () => {
     const config: Phaser.Types.Core.GameConfig = {
-        title: "Lava Escape - Test",
+        title: 'Lava Escape - Test',
         width: 800,
         height: 600,
         scene: scenes,
         type: Phaser.AUTO,
-        parent: "content"
-    }
+        parent: 'content',
+    };
     new TestGame(config);
 };

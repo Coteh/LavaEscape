@@ -1,5 +1,5 @@
-import { Block } from "./Block";
-import { PositionLock } from "./PositionLock";
+import { Block } from './Block';
+import { PositionLock } from './PositionLock';
 
 const DEFAULT_JUMP_FACTOR = 1.0;
 const MAX_HOLD_FACTOR = 2.5;
@@ -24,8 +24,13 @@ export class Player extends Phaser.GameObjects.Sprite {
 
     private onJump: Function;
 
-    constructor(scene: Phaser.Scene, x: number, y: number, keys: Map<string, Phaser.Input.Keyboard.Key>) {
-        super(scene, x, y, "player");
+    constructor(
+        scene: Phaser.Scene,
+        x: number,
+        y: number,
+        keys: Map<string, Phaser.Input.Keyboard.Key>
+    ) {
+        super(scene, x, y, 'player');
         this.setSize(48, 30);
         this.setDisplaySize(48, 30);
         this.scene.add.existing(this);
@@ -51,24 +56,22 @@ export class Player extends Phaser.GameObjects.Sprite {
         if (this.lockBlock) {
             this.lockBlock.update(time, delta);
         }
-        if (!this.grounded)
-            this.y += this.speed * delta;
-        else
-            this.speed = 0;
+        if (!this.grounded) this.y += this.speed * delta;
+        else this.speed = 0;
         // TODO separate score logic into main game manager, perhaps use observer pattern?
         var workingScore: number = -this.y + 500;
         if (this.speed > 0 && workingScore > this.score) {
             this.score = Math.ceil(workingScore);
         }
-        this.scene.registry.set("score", this.score);
-        this.scene.events.emit("updateScore");
-        this.scene.events.emit("debug", "yspeed", this.speed.toString());
-        this.scene.events.emit("debug", "xspeed", this.xSpeed.toString());
+        this.scene.registry.set('score', this.score);
+        this.scene.events.emit('updateScore');
+        this.scene.events.emit('debug', 'yspeed', this.speed.toString());
+        this.scene.events.emit('debug', 'xspeed', this.xSpeed.toString());
         this.speed += this.accel;
         this.x += this.xSpeed + this.xForce;
         this.xSpeed *= 0.49;
-        this.xForce *= 0.70;
-        if (this.keys.get("SPACE").isDown) {
+        this.xForce *= 0.7;
+        if (this.keys.get('SPACE').isDown) {
             this.speed += 0.1;
             this.held = true;
             if (this.holdFactor < MAX_HOLD_FACTOR && this.mana > 0) {
@@ -95,17 +98,17 @@ export class Player extends Phaser.GameObjects.Sprite {
                 this.mana = MAX_MANA;
             }
         }
-        this.scene.events.emit("debug", "mana", this.mana.toString());
-        if (this.keys.get("LEFT").isDown) {
+        this.scene.events.emit('debug', 'mana', this.mana.toString());
+        if (this.keys.get('LEFT').isDown) {
             this.xSpeed = -5;
             this.flipX = true;
         }
-        if (this.keys.get("RIGHT").isDown) {
+        if (this.keys.get('RIGHT').isDown) {
             this.xSpeed = 5;
             this.flipX = false;
         }
     }
-    
+
     /**
      * jump
      */
@@ -120,7 +123,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         if (this.onJump !== undefined) {
             this.onJump(this);
         }
-        this.scene.events.emit("jump");
+        this.scene.events.emit('jump');
         this.unlock();
         this.delayedJump = false;
     }
@@ -131,7 +134,7 @@ export class Player extends Phaser.GameObjects.Sprite {
     public setGrounded(condition: boolean) {
         this.grounded = condition;
         if (condition) {
-            this.scene.events.emit("grounded");
+            this.scene.events.emit('grounded');
         }
     }
 
@@ -150,4 +153,4 @@ export class Player extends Phaser.GameObjects.Sprite {
     public getSpeed(): number {
         return this.speed;
     }
-};
+}

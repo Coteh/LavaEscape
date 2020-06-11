@@ -1,7 +1,7 @@
-import { Player } from "../../src/gameobjects/Player";
-import { Block } from "../../src/gameobjects/Block";
-import { RegularBlockComponent } from "../../src/gameobjects/blocks/RegularBlockComponent";
-import { getManualBounds } from "../../src/util/Bounds";
+import { Player } from '../../src/gameobjects/Player';
+import { Block } from '../../src/gameobjects/Block';
+import { RegularBlockComponent } from '../../src/gameobjects/blocks/RegularBlockComponent';
+import { getManualBounds } from '../../src/util/Bounds';
 
 export class PlayerScene extends Phaser.Scene {
     private player: Player;
@@ -12,7 +12,7 @@ export class PlayerScene extends Phaser.Scene {
 
     constructor() {
         super({
-            key: "MainScene",
+            key: 'MainScene',
         });
     }
 
@@ -21,18 +21,18 @@ export class PlayerScene extends Phaser.Scene {
     }
 
     preload(): void {
-        this.load.image("player", "./assets/img/Player.png");
-        this.load.image("base_platform", "./assets/img/BasePlatform.png");
+        this.load.image('player', './assets/img/Player.png');
+        this.load.image('base_platform', './assets/img/BasePlatform.png');
         this.keys = new Map([
-            ["LEFT", this.input.keyboard.addKey("LEFT")],
-            ["RIGHT", this.input.keyboard.addKey("RIGHT")],
-            ["SPACE", this.input.keyboard.addKey("SPACE")],
+            ['LEFT', this.input.keyboard.addKey('LEFT')],
+            ['RIGHT', this.input.keyboard.addKey('RIGHT')],
+            ['SPACE', this.input.keyboard.addKey('SPACE')],
         ]);
     }
 
     create(): void {
-        this.scene.launch("DebugScene");
-        this.events.emit("debugToggle");
+        this.scene.launch('DebugScene');
+        this.events.emit('debugToggle');
         if (this.onSceneCreated) {
             this.onSceneCreated();
         }
@@ -41,10 +41,8 @@ export class PlayerScene extends Phaser.Scene {
 
     onTestStart(testCallback): void {
         // Destroy old objects if any
-        if (this.player)
-            this.player.destroy();
-        if (this.block)
-            this.block.destroy();
+        if (this.player) this.player.destroy();
+        if (this.block) this.block.destroy();
         // Setup player
         this.player = new Player(this, 300, 500, this.keys);
         this.player.setPosition(0, 100);
@@ -55,10 +53,10 @@ export class PlayerScene extends Phaser.Scene {
             600,
             1000,
             500,
-            "base_platform",
+            'base_platform',
             1,
             new RegularBlockComponent(this.player),
-            0,
+            0
         );
         this.block.setDisplaySize(800, 500);
         this.block.setPlayerReference(this.player);
@@ -92,8 +90,12 @@ export class PlayerScene extends Phaser.Scene {
         if (!playerGrounded) {
             this.player.setGrounded(false);
         }
-        this.events.emit("debug", "grounded", this.player.isGrounded().toString());
-        this.events.emit("debug", "playerX", this.player.x.toString());
-        this.events.emit("debug", "playerY", this.player.y.toString());
+        this.events.emit(
+            'debug',
+            'grounded',
+            this.player.isGrounded().toString()
+        );
+        this.events.emit('debug', 'playerX', this.player.x.toString());
+        this.events.emit('debug', 'playerY', this.player.y.toString());
     }
 }
