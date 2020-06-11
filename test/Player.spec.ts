@@ -269,17 +269,17 @@ describe('Player', () => {
     // - create a test for MainScene (not going to be reliable since too much going on there)
     // - remove these test cases
 
-    // it("should be able to collect pickup", () => {
-    //     expect.fail("Not implemented");
-    // });
+    it('should be able to collect pickup', () => {
+        expect.fail('Not implemented');
+    });
 
-    // it("should be knocked back when hitting falling obstacles", () => {
-    //     expect.fail("Not implemented");
-    // });
+    it('should be knocked back when hitting falling obstacles', () => {
+        expect.fail('Not implemented');
+    });
 
-    // it("should not be able to move past horizontal boundaries", () => {
-    //     expect.fail("Not implemented");
-    // });
+    it('should not be able to move past horizontal boundaries', () => {
+        expect.fail('Not implemented');
+    });
 
     afterEach(() => {
         testText.destroy();
