@@ -182,11 +182,13 @@ describe('Player', () => {
         expect(player.y).to.be.lessThan(playerGroundedPos);
         dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
+        console.log(player.getSpeed(), player.y, game.loop.delta);
         await delay(2000);
+        console.log(player.getSpeed(), player.y, game.loop.delta);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Condition
         await delay(1000);
-        console.log(player.getSpeed());
+        console.log(player.getSpeed(), player.y, game.loop.delta);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Cleanup
         dispatchKeyUp(32);
