@@ -3,8 +3,8 @@ process.env.CHROME_BIN = require('puppeteer').executablePath();
 module.exports = function (config) {
     config.set({
         frameworks: ['mocha', 'karma-typescript'],
-        files: ['test/**/*.spec.ts', 'test/scenes/*.ts', 'src/**/*.ts'],
-        exclude: ['src/game.ts'],
+        files: ['test/**/*.ts', 'src/**/*.ts'],
+        exclude: ['src/game.ts', 'test/test.ts'],
         preprocessors: {
             '**/*.ts': ['karma-typescript'],
         },

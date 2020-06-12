@@ -7,80 +7,26 @@ import { stub } from 'sinon';
 import * as sinonChai from 'sinon-chai';
 import { PlayerScene } from './scenes/PlayerScene';
 import { Block } from '../src/gameobjects/Block';
-import { Game, GameObjects } from 'phaser';
+import KeyEvent from './lib/KeyEvent';
+import PhaserTester from './lib/PhaserTester';
 
 chai.use(sinonChai);
 const expect = chai.expect;
 
-class TestGame extends Phaser.Game {
-    constructor(config: Phaser.Types.Core.GameConfig) {
-        super(config);
-    }
-}
-
-function dispatchKeyEvent(keyEvent: string, keyCode: any) {
-    window.dispatchEvent(
-        new KeyboardEvent(keyEvent, {
-            // @ts-ignore https://github.com/photonstorm/phaser/issues/2542
-            keyCode: keyCode,
-        })
-    );
-}
-
-function dispatchKeyDown(keyCode) {
-    dispatchKeyEvent('keydown', keyCode);
-}
-
-function dispatchKeyUp(keyCode) {
-    dispatchKeyEvent('keyup', keyCode);
-}
-
 describe('Player', () => {
-    var game: Game;
     var scene: PlayerScene;
     var player: Player;
     var block: Block;
     var keyDown: EventListenerOrEventListenerObject;
     var keyUp: EventListenerOrEventListenerObject;
-    var testText: GameObjects.Text;
 
-    function delay(ms) {
-        return new Promise((resolve) => {
-            scene.time.addEvent({
-                delay: ms,
-                callback: resolve,
-            });
-        });
-    }
-
-    function waitForGameEvent(eventName: string) {
-        return new Promise((resolve) => {
-            scene.events.addListener(eventName, () => {
-                resolve();
-            });
-        });
-    }
+    let phaserTester: PhaserTester<PlayerScene>;
 
     before((done) => {
-        const config: Phaser.Types.Core.GameConfig = {
-            title: 'Lava Escape',
-            width: 800,
-            height: 600,
-            scene: [PlayerScene],
-            type: Phaser.AUTO, // TODO set to HEADLESS from env var
-            parent: 'content',
-            callbacks: {
-                postBoot: function (_game) {
-                    game = _game;
-                    scene = game.scene.getScene('MainScene') as PlayerScene;
-                    scene.setOnSceneCreated(() => {
-                        scene.setOnSceneCreated(null);
-                        done();
-                    });
-                },
-            },
-        };
-        new TestGame(config);
+        phaserTester = new PhaserTester(PlayerScene, (_scene: PlayerScene) => {
+            scene = _scene;
+            done();
+        });
     });
 
     beforeEach(function () {
@@ -90,10 +36,7 @@ describe('Player', () => {
         });
         window.removeEventListener('keydown', keyDown);
         window.removeEventListener('keyup', keyUp);
-        scene.game.events.removeAllListeners('grounded');
-        testText = scene.add.text(0, 30, this.currentTest.title, {
-            color: '#fff',
-        });
+        phaserTester.onTestStart(this.currentTest.title);
     });
 
     it('should bounce from ground', async () => {
@@ -102,7 +45,7 @@ describe('Player', () => {
         const playerJumpFunc = stub();
         expect(player.y).to.be.lessThan(playerGroundedPos);
         player.setOnJump(playerJumpFunc);
-        await delay(1000);
+        await phaserTester.delay(1000);
         expect(playerJumpFunc).to.have.been.calledOnce;
         expect(player.y).to.be.lessThan(playerGroundedPos);
     });
@@ -112,7 +55,7 @@ describe('Player', () => {
         player.setOnJump(playerJumpFunc);
         expect(player.y).to.be.lessThan(block.getBounds().top);
         let oldPlayerY: number = player.y;
-        await delay(500);
+        await phaserTester.delay(500);
         expect(player.y).to.be.greaterThan(oldPlayerY);
         expect(playerJumpFunc).not.to.have.been.called;
     });
@@ -123,12 +66,12 @@ describe('Player', () => {
         });
         window.addEventListener('keydown', keyDown);
         expect(player.x).to.be.equal(0);
-        dispatchKeyDown(37);
+        KeyEvent.dispatchKeyDown(37);
         expect(keyDown).to.have.been.calledOnce;
-        await delay(500);
+        await phaserTester.delay(500);
         expect(player.x).to.be.lessThan(0);
         // Cleanup
-        dispatchKeyUp(37);
+        KeyEvent.dispatchKeyUp(37);
     });
 
     it('should be able to move right', async () => {
@@ -137,12 +80,12 @@ describe('Player', () => {
         });
         window.addEventListener('keydown', keyDown);
         expect(player.x).to.be.equal(0);
-        dispatchKeyDown(39);
+        KeyEvent.dispatchKeyDown(39);
         expect(keyDown).to.have.been.calledOnce;
-        await delay(500);
+        await phaserTester.delay(500);
         expect(player.x).to.be.greaterThan(0);
         // Cleanup
-        dispatchKeyUp(39);
+        KeyEvent.dispatchKeyUp(39);
     });
 
     it('should be able to fast fall', async () => {
@@ -160,17 +103,17 @@ describe('Player', () => {
         window.addEventListener('keyup', keyUp);
         // Precondition
         player.y = startPlayerY;
-        await delay(2000);
+        await phaserTester.delay(2000);
         expect(player.y).to.be.greaterThan(startPlayerY);
         oldPlayerY = player.y;
         // Condition
         player.y = startPlayerY;
-        dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
-        await delay(2000);
+        await phaserTester.delay(2000);
         expect(player.y).to.be.greaterThan(oldPlayerY);
         // Cleanup
-        dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(32);
     });
 
     it('should stick to the ground if they fast fell', async () => {
@@ -188,15 +131,15 @@ describe('Player', () => {
         window.addEventListener('keyup', keyUp);
         // Precondition
         expect(player.y).to.be.lessThan(playerGroundedPos);
-        dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
-        await delay(2000);
+        await phaserTester.delay(2000);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Condition
-        await delay(1000);
+        await phaserTester.delay(1000);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Cleanup
-        dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(32);
     });
 
     it('should be able to jump higher if bouncing from fast fall', async () => {
@@ -218,25 +161,23 @@ describe('Player', () => {
         window.addEventListener('keyup', keyUp);
         // Precondition
         player.y = -100;
-        await waitForGameEvent('jump');
+        await phaserTester.waitForGameEvent('jump');
         expect(playerJumpFunc).to.have.been.calledOnce;
-        await delay(1000);
+        await phaserTester.delay(1000);
         regularJumpHeight = playerGroundedPos - player.y;
         // Condition
-        dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
-        await waitForGameEvent('grounded');
+        await phaserTester.waitForGameEvent('grounded');
         expect(player.y).to.be.equal(playerGroundedPos);
-        dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(32);
         expect(keyUp).to.have.been.calledOnce;
-        await delay(1000);
+        await phaserTester.delay(1000);
         expect(playerGroundedPos - player.y).to.be.greaterThan(
             regularJumpHeight
         );
     });
 
-    // TODO - works on its own but cannot coexist with other tests because delta spikes really high when it gets to this test
-    // fix framerate issues and keep the player speed consistent
     it('should eventually fall down again after charged jump', async () => {
         // Constants
         const playerGroundedPos =
@@ -252,16 +193,16 @@ describe('Player', () => {
         window.addEventListener('keyup', keyUp);
         // Precondition
         player.y = -100;
-        dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(32);
         expect(keyDown).to.have.been.calledOnce;
-        await waitForGameEvent('grounded');
+        await phaserTester.waitForGameEvent('grounded');
         expect(player.y).to.be.equal(playerGroundedPos);
-        dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(32);
         expect(keyUp).to.have.been.calledOnce;
         // Ensure player has jumped before waiting to see if it grounded again
-        await waitForGameEvent('jump');
+        await phaserTester.waitForGameEvent('jump');
         // Test passes when player eventually lands again before test timeout
-        await waitForGameEvent('grounded');
+        await phaserTester.waitForGameEvent('grounded');
     });
 
     // TODO either:
@@ -282,6 +223,10 @@ describe('Player', () => {
     });
 
     afterEach(() => {
-        testText.destroy();
+        phaserTester.onTestEnd();
+    });
+
+    after(() => {
+        phaserTester.deinit();
     });
 });
