@@ -1,39 +1,46 @@
 import 'phaser';
 import { Scene, Game, GameObjects } from 'phaser';
 
-abstract class TestScene extends Scene {
-    abstract setOnSceneCreated(onSceneCreated: Function): void;
-}
-
-type SceneNewable<T extends TestScene> = {
+type SceneNewable<T extends Scene> = {
     new (...args: any[]): T;
 };
 
-export default class PhaserTester<T extends TestScene> {
+export default class PhaserTester<T extends Scene> {
     private game: Game;
     private scene: T;
+    private sceneNewable: SceneNewable<T>;
     private testText: GameObjects.Text;
 
-    constructor(sceneNewable: SceneNewable<T>, onSceneCreated: Function) {
-        const config: Phaser.Types.Core.GameConfig = {
-            title: 'Lava Escape',
-            width: 800,
-            height: 600,
-            scene: [sceneNewable],
-            type: Phaser.AUTO, // TODO(#39) set to HEADLESS from env var
-            parent: 'content',
-            callbacks: {
-                postBoot: (game) => {
-                    this.game = game;
-                    this.scene = game.scene.getScene('MainScene') as T;
-                    this.scene.setOnSceneCreated(() => {
-                        this.scene.setOnSceneCreated(null);
-                        if (onSceneCreated) onSceneCreated(this.scene);
-                    });
+    constructor(sceneNewable: SceneNewable<T>) {
+        this.sceneNewable = sceneNewable;
+    }
+
+    public getScene(): T {
+        return this.scene;
+    }
+
+    public async setup(): Promise<void> {
+        return new Promise((resolve) => {
+            const config: Phaser.Types.Core.GameConfig = {
+                title: 'Lava Escape',
+                width: 800,
+                height: 600,
+                type: Phaser.AUTO, // TODO(#39) set to HEADLESS from env var
+                parent: 'content',
+                callbacks: {
+                    postBoot: (game) => {
+                        this.game = game;
+                        this.scene = game.scene.add(
+                            'MainScene',
+                            this.sceneNewable,
+                            true
+                        ) as T;
+                        resolve();
+                    },
                 },
-            },
-        };
-        new Game(config);
+            };
+            new Game(config);
+        });
     }
 
     public deinit() {

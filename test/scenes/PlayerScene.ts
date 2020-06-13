@@ -6,7 +6,6 @@ import { getManualBounds } from '../../src/util/Bounds';
 export class PlayerScene extends Phaser.Scene {
     private player: Player;
     private block: Block;
-    private onSceneCreated: Function;
 
     private keys: Map<string, Phaser.Input.Keyboard.Key>;
 
@@ -14,10 +13,6 @@ export class PlayerScene extends Phaser.Scene {
         super({
             key: 'MainScene',
         });
-    }
-
-    setOnSceneCreated(onSceneCreated: Function): void {
-        this.onSceneCreated = onSceneCreated;
     }
 
     preload(): void {
@@ -33,13 +28,9 @@ export class PlayerScene extends Phaser.Scene {
     create(): void {
         this.scene.launch('DebugScene');
         this.events.emit('debugToggle');
-        if (this.onSceneCreated) {
-            this.onSceneCreated();
-        }
-        this.onTestStart(null); // call test start callback here as well in the case that test is invoked using `npm run dev-test`
     }
 
-    onTestStart(testCallback): void {
+    public onTestStart(testCallback): void {
         // Destroy old objects if any
         if (this.player) this.player.destroy();
         if (this.block) this.block.destroy();

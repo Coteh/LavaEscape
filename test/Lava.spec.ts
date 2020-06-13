@@ -7,11 +7,10 @@ describe('Lava', () => {
     let scene: LavaScene;
     let phaserTester: PhaserTester<LavaScene>;
 
-    before((done) => {
-        phaserTester = new PhaserTester(LavaScene, (_scene: LavaScene) => {
-            scene = _scene;
-            done();
-        });
+    before(async () => {
+        phaserTester = new PhaserTester(LavaScene);
+        await phaserTester.setup();
+        scene = phaserTester.getScene();
     });
 
     beforeEach(function () {

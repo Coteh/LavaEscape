@@ -22,11 +22,10 @@ describe('Player', () => {
 
     let phaserTester: PhaserTester<PlayerScene>;
 
-    before((done) => {
-        phaserTester = new PhaserTester(PlayerScene, (_scene: PlayerScene) => {
-            scene = _scene;
-            done();
-        });
+    before(async () => {
+        phaserTester = new PhaserTester(PlayerScene);
+        await phaserTester.setup();
+        scene = phaserTester.getScene();
     });
 
     beforeEach(function () {

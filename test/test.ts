@@ -2,6 +2,10 @@ import 'phaser';
 import { DebugScene } from '../src/scenes/DebugScene';
 import { PlayerScene } from './scenes/PlayerScene';
 
+abstract class TestScene extends Phaser.Scene {
+    public abstract onTestStart(testCallback): void;
+}
+
 class TestGame extends Phaser.Game {
     constructor(config: Phaser.Types.Core.GameConfig) {
         super(config);
@@ -30,6 +34,14 @@ window.onload = () => {
         scene: scenes,
         type: Phaser.AUTO,
         parent: 'content',
+        callbacks: {
+            postBoot: (game) => {
+                let scene: TestScene = game.scene.getScene(
+                    'MainScene'
+                ) as TestScene;
+                scene.onTestStart(null);
+            },
+        },
     };
     new TestGame(config);
 };
