@@ -1,10 +1,14 @@
 import 'phaser';
 import PhaserTester from './lib/PhaserTester';
 import { LavaScene } from './scenes/LavaScene';
-import { assert } from 'chai';
+import { assert, expect } from 'chai';
+import { Lava } from '../src/gameobjects/Lava';
+import { Player } from '../src/gameobjects/Player';
 
 describe('Lava', () => {
     let scene: LavaScene;
+    let lava: Lava;
+    let playerMock: Player;
     let phaserTester: PhaserTester<LavaScene>;
 
     before(async () => {
@@ -14,15 +18,20 @@ describe('Lava', () => {
     });
 
     beforeEach(function () {
-        scene.onTestStart(() => {});
+        scene.onTestStart((_lava, _player) => {
+            lava = _lava;
+            playerMock = _player;
+        });
         phaserTester.onTestStart(this.currentTest.title);
     });
 
-    it('should move up', () => {
-        assert.fail('Not implemented');
+    it('should move up', async () => {
+        const oldLavaY: number = lava.y;
+        await phaserTester.delay(1000);
+        expect(lava.y).to.be.lessThan(oldLavaY);
     });
 
-    it('should be able to speed up over time', () => {
+    it('should be able to speed up after 10 seconds', () => {
         assert.fail('Not implemented');
     });
 

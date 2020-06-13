@@ -35,8 +35,7 @@ export class PlayerScene extends Phaser.Scene {
         if (this.player) this.player.destroy();
         if (this.block) this.block.destroy();
         // Setup player
-        this.player = new Player(this, 300, 500, this.keys);
-        this.player.setPosition(0, 100);
+        this.player = new Player(this, 0, 100, this.keys);
         // Setup base platform
         this.block = new Block(
             this,

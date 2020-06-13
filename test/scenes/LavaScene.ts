@@ -1,4 +1,12 @@
+import { Lava } from '../../src/gameobjects/Lava';
+import { GameObjects } from 'phaser';
+import { Player } from '../../src/gameobjects/Player';
+import { createSinonStubInstance } from '../lib/SinonStubHelpers';
+
 export class LavaScene extends Phaser.Scene {
+    private lava: Lava;
+    private playerMock: Player;
+
     constructor() {
         super({
             key: 'MainScene',
@@ -13,10 +21,19 @@ export class LavaScene extends Phaser.Scene {
     }
 
     public onTestStart(testCallback): void {
+        // Destroy old objects if any
+        if (this.lava) this.lava.destroy();
+        if (this.playerMock) this.playerMock.destroy();
+        // Setup lava
+        this.playerMock = createSinonStubInstance(Player);
+        this.playerMock.y = -300;
+        this.lava = new Lava(this, 0, 600, this.playerMock);
         if (testCallback) {
-            testCallback();
+            testCallback(this.lava, this.playerMock);
         }
     }
 
-    update(time: number, delta: number): void {}
+    update(time: number, delta: number): void {
+        if (this.lava) this.lava.update(time, delta);
+    }
 }
