@@ -217,10 +217,6 @@ describe('Player', () => {
         expect.fail('Not implemented');
     });
 
-    it('should not be able to move past horizontal boundaries', () => {
-        expect.fail('Not implemented');
-    });
-
     afterEach(() => {
         phaserTester.onTestEnd();
     });
