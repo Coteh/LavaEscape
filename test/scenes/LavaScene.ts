@@ -25,7 +25,7 @@ export class LavaScene extends Phaser.Scene {
         if (this.lava) this.lava.destroy();
         if (this.playerMock) this.playerMock.destroy();
         // Setup lava
-        this.playerMock = createSinonStubInstance(Player);
+        this.playerMock = new Player(this, 0, -300, new Map());
         this.playerMock.y = -300;
         this.lava = new Lava(this, 0, 600, this.playerMock);
         if (testCallback) {
@@ -34,6 +34,13 @@ export class LavaScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
-        if (this.lava) this.lava.update(time, delta);
+        let diff: number;
+        if (this.lava) {
+            const oldLavaY: number = this.lava.y;
+            this.lava.update(time, delta);
+            diff = this.lava.y - oldLavaY;
+        }
+        // Player position affects lava speed, so displace it by same distance lava is to isolate this feature
+        if (this.playerMock) this.playerMock.y += diff;
     }
 }
