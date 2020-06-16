@@ -71,7 +71,7 @@ export class Player extends Phaser.GameObjects.Sprite {
         this.x += this.xSpeed + this.xForce;
         this.xSpeed *= 0.49;
         this.xForce *= 0.7;
-        if (this.keys.get('SPACE').isDown) {
+        if (this.keys.get('SPACE')?.isDown) {
             this.speed += 0.1;
             this.held = true;
             if (this.holdFactor < MAX_HOLD_FACTOR && this.mana > 0) {
@@ -99,11 +99,11 @@ export class Player extends Phaser.GameObjects.Sprite {
             }
         }
         this.scene.events.emit('debug', 'mana', this.mana.toString());
-        if (this.keys.get('LEFT').isDown) {
+        if (this.keys.get('LEFT')?.isDown) {
             this.xSpeed = -5;
             this.flipX = true;
         }
-        if (this.keys.get('RIGHT').isDown) {
+        if (this.keys.get('RIGHT')?.isDown) {
             this.xSpeed = 5;
             this.flipX = false;
         }

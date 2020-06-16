@@ -75,6 +75,10 @@ describe('Lava', () => {
         expect(Math.abs(lava.y - oldLavaY)).to.be.closeTo(0, 0.1);
     });
 
+    afterEach(() => {
+        phaserTester.onTestEnd();
+    });
+
     after(() => {
         phaserTester.deinit();
     });
