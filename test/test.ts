@@ -1,6 +1,9 @@
 import 'phaser';
 import { DebugScene } from '../src/scenes/DebugScene';
 import { PlayerScene } from './scenes/PlayerScene';
+import { BlockScene } from './scenes/BlockScene';
+import { LavaScene } from './scenes/LavaScene';
+import { BackgroundScene } from './scenes/BackgroundScene';
 
 abstract class TestScene extends Phaser.Scene {
     public abstract onTestStart(testCallback): void;
@@ -18,6 +21,15 @@ var scenes: Function[] = [];
 switch (TEST_SCENE) {
     case 'player':
         scenes.push(PlayerScene);
+        break;
+    case 'block':
+        scenes.push(BlockScene);
+        break;
+    case 'lava':
+        scenes.push(LavaScene);
+        break;
+    case 'bg':
+        scenes.push(BackgroundScene);
         break;
 }
 
@@ -39,7 +51,9 @@ window.onload = () => {
                 let scene: TestScene = game.scene.getScene(
                     'MainScene'
                 ) as TestScene;
-                scene.onTestStart(null);
+                scene.events.on('create', () => {
+                    scene.onTestStart(null);
+                });
             },
         },
     };

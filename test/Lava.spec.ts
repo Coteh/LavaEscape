@@ -18,11 +18,10 @@ describe('Lava', () => {
     });
 
     beforeEach(function () {
-        scene.onTestStart((_lava, _player) => {
+        phaserTester.startTestCase(this.currentTest.title, (_lava, _player) => {
             lava = _lava;
             playerMock = _player;
         });
-        phaserTester.onTestStart(this.currentTest.title);
     });
 
     it('should move up', async () => {
@@ -76,7 +75,7 @@ describe('Lava', () => {
     });
 
     afterEach(() => {
-        phaserTester.onTestEnd();
+        phaserTester.endTestCase();
     });
 
     after(() => {

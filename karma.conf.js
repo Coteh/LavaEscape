@@ -9,10 +9,19 @@ function getSpecs(specList) {
 
 module.exports = function (config) {
     config.set({
+        basePath: '',
         frameworks: ['mocha', 'karma-typescript'],
-        files: ['test/lib/*.ts', 'test/scenes/*.ts', 'src/**/*.ts'].concat(
-            getSpecs(process.env.SPEC_LIST)
-        ),
+        files: [
+            'test/lib/*.ts',
+            'test/scenes/*.ts',
+            'src/**/*.ts',
+            {
+                pattern: 'assets/img/*',
+                watched: true,
+                included: false,
+                served: true,
+            },
+        ].concat(getSpecs(process.env.SPEC_LIST)),
         exclude: ['src/game.ts', 'test/test.ts'],
         preprocessors: {
             '**/*.ts': ['karma-typescript'],
@@ -21,6 +30,9 @@ module.exports = function (config) {
         browsers: [
             process.env.TEST_TYPE === 'view' ? 'Chrome' : 'ChromeHeadless',
         ],
+        proxies: {
+            '/assets/img/': '/base/assets/img/',
+        },
         junitReporter: {
             outputDir: process.env.JUNIT_REPORT_PATH,
             outputFile: process.env.JUNIT_REPORT_NAME,

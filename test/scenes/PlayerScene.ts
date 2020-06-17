@@ -6,6 +6,7 @@ import { getManualBounds } from '../../src/util/Bounds';
 export class PlayerScene extends Phaser.Scene {
     private player: Player;
     private block: Block;
+    private readyForTest: boolean;
 
     private keys: Map<string, Phaser.Input.Keyboard.Key>;
 
@@ -57,6 +58,7 @@ export class PlayerScene extends Phaser.Scene {
         if (testCallback) {
             testCallback(this.player, this.block);
         }
+        this.readyForTest = true;
     }
 
     onPlatformHit(player: Player, block: Block): void {
@@ -68,6 +70,7 @@ export class PlayerScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
+        if (!this.readyForTest) return;
         this.player.update(time, delta);
         var playerGrounded: boolean = false;
         if (this.block.active) {

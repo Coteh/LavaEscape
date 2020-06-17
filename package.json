@@ -11,7 +11,7 @@
     "main": "index.js",
     "scripts": {
         "dev": "webpack-dev-server --env.NODE_ENV=dev",
-        "dev-test": "webpack-dev-server --env.NODE_ENV=test --env.TEST_SCENE=player",
+        "dev-test": "webpack-dev-server --env.NODE_ENV=test --env.TEST_SCENE=$TEST_SCENE",
         "format": "prettier --config ./.prettierrc.json --write .",
         "prod": "webpack --mode=production",
         "test": "./scripts/test",

@@ -29,13 +29,15 @@ describe('Player', () => {
     });
 
     beforeEach(function () {
-        scene.onTestStart((_player: Player, _block: Block) => {
-            player = _player;
-            block = _block;
-        });
         window.removeEventListener('keydown', keyDown);
         window.removeEventListener('keyup', keyUp);
-        phaserTester.onTestStart(this.currentTest.title);
+        phaserTester.startTestCase(
+            this.currentTest.title,
+            (_player: Player, _block: Block) => {
+                player = _player;
+                block = _block;
+            }
+        );
     });
 
     it('should bounce from ground', async () => {
@@ -218,7 +220,7 @@ describe('Player', () => {
     });
 
     afterEach(() => {
-        phaserTester.onTestEnd();
+        phaserTester.endTestCase();
     });
 
     after(() => {

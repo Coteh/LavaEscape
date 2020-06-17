@@ -18,11 +18,13 @@ describe('ScrollingBackground', () => {
     });
 
     beforeEach(function () {
-        scene.onTestStart((_background, _player) => {
-            background = _background;
-            playerMock = _player;
-        });
-        phaserTester.onTestStart(this.currentTest.title);
+        phaserTester.startTestCase(
+            this.currentTest.title,
+            (_background, _player) => {
+                background = _background;
+                playerMock = _player;
+            }
+        );
     });
 
     it('should scroll down as player moves up', async () => {
@@ -43,29 +45,19 @@ describe('ScrollingBackground', () => {
         // Take a bit for background to calibrate
         await phaserTester.delay(500);
         // Move player upwards enough to spawn new tile
-        playerMock.y -= 200 * 300; // move bg down by 600 units, when background y is greater than -10, new bg should be made
+        playerMock.y -= 200 * 1365; // move bg down by half its height (moving player by 200 moves bg down by 2 units), when background y is greater than -10, new bg should be made
         // Wait a bit so bg can update
         await phaserTester.delay(1000);
         // Condition: Background spawned a new tile (there should be 2 instead of 1 now)
         expect(background.getNumberOfBackgroundTiles()).to.be.equal(2);
     });
     it('should delete old background tiles when they are out of view', async () => {
-        // Take a bit for background to calibrate
-        await phaserTester.delay(500);
-        // Move player upwards enough to spawn new tile
-        playerMock.y -= 200 * 300; // move bg down by 600 units, when background y is greater than -10, new bg should be made
-        // Wait a bit so bg can update
-        await phaserTester.delay(1000);
-        // Move player a bit more so that old tile can be removed
-        playerMock.y -= 200 * 150;
-        // Wait a bit so bg can update
-        await phaserTester.delay(1000);
-        // Condition: Should only be one background tile now, since old tile was deleted due to passing threshold
-        expect(background.getNumberOfBackgroundTiles()).to.be.equal(1);
+        // TODO consider removing since it's an implementation detail, and not easily testable
+        assert.fail('Not implemented');
     });
 
     afterEach(() => {
-        phaserTester.onTestEnd();
+        phaserTester.endTestCase();
     });
 
     after(() => {

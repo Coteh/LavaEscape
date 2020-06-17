@@ -5,7 +5,11 @@ type SceneNewable<T extends Scene> = {
     new (...args: any[]): T;
 };
 
-export default class PhaserTester<T extends Scene> {
+abstract class TestScene extends Scene {
+    public abstract onTestStart(testCallback): void;
+}
+
+export default class PhaserTester<T extends TestScene> {
     private game: Game;
     private scene: T;
     private sceneNewable: SceneNewable<T>;
@@ -35,7 +39,9 @@ export default class PhaserTester<T extends Scene> {
                             this.sceneNewable,
                             true
                         ) as T;
-                        resolve();
+                        this.scene.events.on('create', () => {
+                            resolve();
+                        });
                     },
                 },
             };
@@ -47,14 +53,18 @@ export default class PhaserTester<T extends Scene> {
         this.game.destroy(true);
     }
 
-    public onTestStart(testName: string) {
+    public startTestCase(
+        testName: string,
+        sceneTestStartCallback: Function
+    ): void {
         this.scene.game.events.removeAllListeners('grounded');
         this.testText = this.scene.add.text(0, 30, testName, {
             color: '#fff',
         });
+        this.scene.onTestStart(sceneTestStartCallback);
     }
 
-    public onTestEnd() {
+    public async endTestCase() {
         this.testText.destroy();
     }
 
