@@ -9,7 +9,6 @@ function getSpecs(specList) {
 
 module.exports = function (config) {
     config.set({
-        basePath: '',
         frameworks: ['mocha', 'karma-typescript'],
         files: [
             'test/lib/*.ts',

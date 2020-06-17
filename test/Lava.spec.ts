@@ -7,9 +7,9 @@ import { Player } from '../src/gameobjects/Player';
 
 describe('Lava', () => {
     let scene: LavaScene;
+    let phaserTester: PhaserTester<LavaScene>;
     let lava: Lava;
     let playerMock: Player;
-    let phaserTester: PhaserTester<LavaScene>;
 
     before(async () => {
         phaserTester = new PhaserTester(LavaScene);
@@ -34,7 +34,7 @@ describe('Lava', () => {
         let oldLavaY: number = lava.y;
         await phaserTester.delay(1000);
         const oldSpeed: number = Math.abs(lava.y - oldLavaY);
-        await phaserTester.delay(10000);
+        await phaserTester.delay(11000);
         oldLavaY = lava.y;
         await phaserTester.delay(1000);
         expect(Math.abs(lava.y - oldLavaY)).to.be.greaterThan(oldSpeed);

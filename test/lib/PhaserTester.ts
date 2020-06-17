@@ -64,7 +64,7 @@ export default class PhaserTester<T extends TestScene> {
         this.scene.onTestStart(sceneTestStartCallback);
     }
 
-    public async endTestCase() {
+    public endTestCase() {
         this.testText.destroy();
     }
 

@@ -1,3 +1,5 @@
+import 'phaser';
+
 import { assert, expect } from 'chai';
 import { BlockScene } from './scenes/BlockScene';
 import PhaserTester from './lib/PhaserTester';
@@ -30,20 +32,25 @@ describe('Platform', () => {
             // await phaserTester.delay(100000);
             // expect(block.y).equal(0);
         });
+
         it('should not allow player to jump if collided with from any other side', () => {
             assert.fail('Not implemented');
         });
+
         it('should not allow player to jump if player moves past it from the bottom', () => {
             assert.fail('Not implemented');
         });
     });
+
     describe('Moving', () => {
         it('should behave like a regular platform', () => {
             assert.fail('Not implemented');
         });
+
         it('should move horizontally', () => {
             assert.fail('Not implemented');
         });
+
         it('should have its direction mirrored when hitting game boundary', () => {
             assert.fail('Not implemented');
         });

@@ -41,6 +41,7 @@ describe('ScrollingBackground', () => {
             oldBackgroundY
         );
     });
+
     it('should load a new tile if it scrolled down past threshold', async () => {
         // Take a bit for background to calibrate
         await phaserTester.delay(500);
@@ -50,10 +51,6 @@ describe('ScrollingBackground', () => {
         await phaserTester.delay(1000);
         // Condition: Background spawned a new tile (there should be 2 instead of 1 now)
         expect(background.getNumberOfBackgroundTiles()).to.be.equal(2);
-    });
-    it('should delete old background tiles when they are out of view', async () => {
-        // TODO consider removing since it's an implementation detail, and not easily testable
-        assert.fail('Not implemented');
     });
 
     afterEach(() => {
