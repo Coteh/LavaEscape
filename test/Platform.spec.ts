@@ -1,10 +1,16 @@
 import 'phaser';
 
+import * as chai from 'chai';
+import { stub } from 'sinon';
+import * as sinonChai from 'sinon-chai';
+
 import { assert, expect } from 'chai';
 import { BlockScene } from './scenes/BlockScene';
 import PhaserTester from './lib/PhaserTester';
 import { Block } from '../src/gameobjects/Block';
 import { Player } from '../src/gameobjects/Player';
+
+chai.use(sinonChai);
 
 describe('Platform', () => {
     let scene: BlockScene;
@@ -26,11 +32,23 @@ describe('Platform', () => {
 
     describe('Regular', () => {
         it('can allow player to jump when collided from the top', async () => {
-            assert.fail('Not implemented');
-            // TODO blocks don't render, even after adding it to scene graph
-            // block = scene.createBlock('reg');
-            // await phaserTester.delay(100000);
-            // expect(block.y).equal(0);
+            // Setup Block
+            block = scene.createBlock('reg', 400, 400);
+            const jumpStub = stub();
+            // Setup jump stub event
+            scene.events.on('jump', jumpStub);
+            // Constants
+            const playerGroundedPos =
+                block.getBounds().top - playerMock.getBounds().height / 2;
+            // Position player
+            playerMock.x = 400;
+            playerMock.y = 200;
+            // Wait for jump then a second after it should be in the air still
+            await phaserTester.waitForGameEvent('jump');
+            await phaserTester.delay(1000);
+            // Check condition
+            expect(jumpStub).to.be.calledOnce;
+            expect(playerMock.y).to.be.lessThan(playerGroundedPos);
         });
 
         it('should not allow player to jump if collided with from any other side', () => {

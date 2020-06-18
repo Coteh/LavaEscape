@@ -2,6 +2,7 @@ import { Player } from '../../src/gameobjects/Player';
 import { Block } from '../../src/gameobjects/Block';
 import { RegularBlockComponent } from '../../src/gameobjects/blocks/RegularBlockComponent';
 import { getManualBounds } from '../../src/util/Bounds';
+import { CollideFuncs } from '../../src/util/CollideFuncs';
 
 export class PlayerScene extends Phaser.Scene {
     private player: Player;
@@ -51,7 +52,9 @@ export class PlayerScene extends Phaser.Scene {
         );
         this.block.setDisplaySize(800, 500);
         this.block.setPlayerReference(this.player);
-        this.block.setPlayerCollideFunc(this.onPlatformHit.bind(this));
+        this.block.setPlayerCollideFunc(
+            CollideFuncs.resolvePlayerBlockCollision
+        );
         this.add.existing(this.block);
         // make the center of this bottom block camera focus point
         this.cameras.main.centerOnX(getManualBounds(this.block).centerX);
@@ -59,14 +62,6 @@ export class PlayerScene extends Phaser.Scene {
             testCallback(this.player, this.block);
         }
         this.readyForTest = true;
-    }
-
-    onPlatformHit(player: Player, block: Block): void {
-        var blockBounds = getManualBounds(block);
-        var playerBounds = getManualBounds(player);
-        player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
-        player.setGrounded(true);
-        block.executeBlockHitEffect();
     }
 
     update(time: number, delta: number): void {

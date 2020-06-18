@@ -1,6 +1,7 @@
 import { Block } from '../../src/gameobjects/Block';
 import { RegularBlockComponent } from '../../src/gameobjects/blocks/RegularBlockComponent';
 import { Player } from '../../src/gameobjects/Player';
+import { CollideFuncs } from '../../src/util/CollideFuncs';
 
 export class BlockScene extends Phaser.Scene {
     private block: Block;
@@ -12,13 +13,13 @@ export class BlockScene extends Phaser.Scene {
         });
     }
 
-    public createBlock(blockType: string): Block {
+    public createBlock(blockType: string, x: number, y: number): Block {
         switch (blockType) {
             case 'reg':
                 this.block = new Block(
                     this,
-                    0,
-                    0,
+                    x,
+                    y,
                     100,
                     20,
                     'reg_platform',
@@ -34,6 +35,9 @@ export class BlockScene extends Phaser.Scene {
         }
         this.add.existing(this.block);
         this.block.setPlayerReference(this.playerMock);
+        this.block.setPlayerCollideFunc(
+            CollideFuncs.resolvePlayerBlockCollision
+        );
         return this.block;
     }
 
@@ -60,5 +64,6 @@ export class BlockScene extends Phaser.Scene {
 
     update(time: number, delta: number): void {
         this.block?.update(time, delta);
+        this.playerMock?.update(time, delta);
     }
 }
