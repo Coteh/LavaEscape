@@ -4,19 +4,23 @@ import { Player } from '../../src/gameobjects/Player';
 import { CollideFuncs } from '../../src/util/CollideFuncs';
 
 export class BlockScene extends Phaser.Scene {
-    private block: Block;
+    private blocks: Block[];
     private playerMock: Player;
+
+    private keys: Map<string, Phaser.Input.Keyboard.Key>;
 
     constructor() {
         super({
             key: 'MainScene',
         });
+        this.blocks = [];
     }
 
     public createBlock(blockType: string, x: number, y: number): Block {
+        let block: Block;
         switch (blockType) {
             case 'reg':
-                this.block = new Block(
+                block = new Block(
                     this,
                     x,
                     y,
@@ -33,16 +37,20 @@ export class BlockScene extends Phaser.Scene {
             case 'collapse':
                 break;
         }
-        this.add.existing(this.block);
-        this.block.setPlayerReference(this.playerMock);
-        this.block.setPlayerCollideFunc(
-            CollideFuncs.resolvePlayerBlockCollision
-        );
-        return this.block;
+        this.blocks.push(block);
+        this.add.existing(block);
+        block.setPlayerReference(this.playerMock);
+        block.setPlayerCollideFunc(CollideFuncs.resolvePlayerBlockCollision);
+        return block;
     }
 
     preload(): void {
         this.load.image('reg_platform', './assets/img/Platform.png');
+        this.keys = new Map([
+            ['LEFT', this.input.keyboard.addKey('LEFT')],
+            ['RIGHT', this.input.keyboard.addKey('RIGHT')],
+            ['SPACE', this.input.keyboard.addKey('SPACE')],
+        ]);
     }
 
     create(): void {
@@ -52,10 +60,13 @@ export class BlockScene extends Phaser.Scene {
 
     public onTestStart(testCallback): void {
         // Destroy old objects if any
-        this.block?.destroy();
+        this.blocks.forEach((block) => {
+            block.destroy();
+        });
+        this.blocks = [];
         this.playerMock?.destroy();
         // Setup test stuff
-        this.playerMock = new Player(this, 0, -200, new Map());
+        this.playerMock = new Player(this, 0, -200, this.keys);
         // Execute test init callback
         if (testCallback) {
             testCallback(this.playerMock);
@@ -63,7 +74,9 @@ export class BlockScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
-        this.block?.update(time, delta);
+        this.blocks.forEach((block) => {
+            block.update(time, delta);
+        });
         this.playerMock?.update(time, delta);
     }
 }

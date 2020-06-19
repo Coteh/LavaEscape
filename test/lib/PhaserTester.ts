@@ -15,6 +15,9 @@ export default class PhaserTester<T extends TestScene> {
     private sceneNewable: SceneNewable<T>;
     private testText: GameObjects.Text;
 
+    public keyDown: EventListenerOrEventListenerObject;
+    public keyUp: EventListenerOrEventListenerObject;
+
     constructor(sceneNewable: SceneNewable<T>) {
         this.sceneNewable = sceneNewable;
     }
@@ -57,6 +60,8 @@ export default class PhaserTester<T extends TestScene> {
         testName: string,
         sceneTestStartCallback: Function
     ): void {
+        window.removeEventListener('keydown', this.keyDown);
+        window.removeEventListener('keyup', this.keyUp);
         this.scene.game.events.removeAllListeners('grounded');
         this.testText = this.scene.add.text(0, 30, testName, {
             color: '#fff',
