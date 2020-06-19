@@ -87,8 +87,32 @@ describe('Platform', () => {
             KeyEvent.dispatchKeyUp(37);
         });
 
-        it('should not allow player to jump if player moves past it from the bottom', () => {
-            assert.fail('Not implemented');
+        it('should not allow player to jump if player moves past it from the bottom', async () => {
+            // Setup Block
+            block = scene.createBlock('reg', 400, 400);
+            // Constants
+            const playerGroundedPos =
+                block.getBounds().top - playerMock.getBounds().height / 2;
+            // Position player
+            playerMock.x = 400;
+            playerMock.y = 300;
+            // Wait for jump
+            await phaserTester.waitForGameEvent('jump');
+            // Create new block where player started
+            scene.createBlock('reg', 400, 300);
+            // Setup jump stub event
+            const jumpStub = stub();
+            scene.events.on('jump', jumpStub);
+            // Wait half a second
+            await phaserTester.delay(500);
+            // Precondition: Player is still above the first block
+            expect(playerMock.y).to.be.lessThan(playerGroundedPos);
+            // Wait until player reaches y of 250 or less
+            await phaserTester.waitForCondition(() => {
+                return playerMock.y <= 250;
+            });
+            // Condition: Jump was not called after player went left
+            expect(jumpStub).to.not.be.called;
         });
     });
 

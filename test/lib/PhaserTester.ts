@@ -89,4 +89,18 @@ export default class PhaserTester<T extends TestScene> {
             });
         });
     }
+
+    public waitForCondition(condition: Function) {
+        return new Promise((resolve, reject) => {
+            if (!condition) {
+                reject(new Error('No condition provided'));
+                return;
+            }
+            this.game.events.on('step', () => {
+                if (condition()) {
+                    resolve();
+                }
+            });
+        });
+    }
 }
