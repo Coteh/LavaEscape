@@ -111,22 +111,74 @@ describe('Platform', () => {
             await phaserTester.waitForCondition(() => {
                 return playerMock.y <= 250;
             });
-            // Condition: Jump was not called after player went left
+            // Condition: Jump was not called after player went below block
             expect(jumpStub).to.not.be.called;
         });
     });
 
     describe('Moving', () => {
-        it('should behave like a regular platform', () => {
-            assert.fail('Not implemented');
+        it('should behave like a regular platform', async () => {
+            // Create block
+            block = scene.createBlock('moving', 400, 400);
+            // Constants
+            const playerGroundedPos =
+                block.getBounds().top - playerMock.getBounds().height / 2;
+            // Setup jump stub
+            const jumpStub = stub();
+            scene.events.on('jump', jumpStub);
+            // Position player
+            playerMock.x = 400;
+            playerMock.y = 200;
+            // Precondition: Player is above platform
+            expect(playerMock.y).to.be.lessThan(playerGroundedPos);
+            // Wait till jump
+            await phaserTester.waitForGameEvent('jump');
+            // Condition: Player jumped from moving platform
+            expect(jumpStub).to.be.calledOnce;
+            // Wait half a second
+            await phaserTester.delay(500);
+            // Postcondition: Player is still above moving platform
+            expect(playerMock.y).to.be.lessThan(playerGroundedPos);
         });
 
-        it('should move horizontally', () => {
-            assert.fail('Not implemented');
+        it('should move horizontally', async () => {
+            // Create block
+            block = scene.createBlock('moving', 400, 400);
+            // Record old block position
+            let oldBlockX = block.x;
+            let oldBlockY = block.y;
+            // Elapse a second of time
+            await phaserTester.delay(1000);
+            // Condition: Block has exact same y and its x has moved
+            expect(block.y).to.be.equal(oldBlockY);
+            expect(block.x).to.not.be.equal(oldBlockX);
         });
 
-        it('should have its direction mirrored when hitting game boundary', () => {
-            assert.fail('Not implemented');
+        it('should have its direction mirrored when hitting game boundary', async () => {
+            // Create block
+            block = scene.createBlock(
+                'moving',
+                // TODO fix Block's bounds checking
+                // so that it checks for game width instead of hardcoded value
+                phaserTester.getGameWidth() - 200,
+                400
+            );
+            // Record old block position
+            let oldBlockX = block.x;
+            let oldBlockY = block.y;
+            // Elapse a second of time
+            await phaserTester.delay(1000);
+            // Precondition: Block has exact same y and its x has moved to the right
+            expect(block.y).to.be.equal(oldBlockY);
+            expect(block.x).to.be.greaterThan(oldBlockX);
+            // Record x and y
+            oldBlockX = block.x;
+            oldBlockY = block.y;
+            // Elapse another second of time
+            await phaserTester.delay(1000);
+            // Precondition: Block has exact same y and its x has moved to the left
+            expect(block.y).to.be.equal(oldBlockY);
+            expect(block.x).to.be.lessThan(oldBlockX);
         });
     });
     // TODO(#30)

@@ -26,6 +26,10 @@ export default class PhaserTester<T extends TestScene> {
         return this.scene;
     }
 
+    public getGameWidth() {
+        return this.game.canvas.width;
+    }
+
     public async setup(): Promise<void> {
         return new Promise((resolve) => {
             const config: Phaser.Types.Core.GameConfig = {

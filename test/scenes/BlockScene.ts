@@ -33,6 +33,17 @@ export class BlockScene extends Phaser.Scene {
                 );
                 break;
             case 'moving':
+                block = new Block(
+                    this,
+                    x,
+                    y,
+                    100,
+                    20,
+                    'reg_platform',
+                    1,
+                    new RegularBlockComponent(this.playerMock),
+                    1
+                );
                 break;
             case 'collapse':
                 break;
