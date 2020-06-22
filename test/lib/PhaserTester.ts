@@ -67,8 +67,14 @@ export default class PhaserTester<T extends TestScene> {
         window.removeEventListener('keydown', this.keyDown);
         window.removeEventListener('keyup', this.keyUp);
         this.scene.game.events.removeAllListeners('grounded');
+        this.game.events.removeAllListeners('step');
         this.testText = this.scene.add.text(0, 30, testName, {
             color: '#fff',
+        });
+        this.testText.depth = 1000;
+        this.game.events.on('step', () => {
+            let mainCam = this.scene.cameras.main;
+            this.testText.setPosition(mainCam.scrollX, mainCam.scrollY);
         });
         this.scene.onTestStart(sceneTestStartCallback);
     }

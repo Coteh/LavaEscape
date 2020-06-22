@@ -32,6 +32,8 @@ export class LavaScene extends Phaser.Scene {
         this.playerMock = new Player(this, 0, -300, new Map());
         this.playerMock.y = -300;
         this.lava = new Lava(this, 0, 600, this.playerMock);
+        this.add.existing(this.lava);
+        this.cameras.main.setScroll(this.lava.x, this.lava.y - 800);
         if (testCallback) {
             testCallback(this.lava, this.playerMock);
         }

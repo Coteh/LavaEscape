@@ -9,6 +9,7 @@ import { PlayerScene } from './scenes/PlayerScene';
 import { Block } from '../src/gameobjects/Block';
 import KeyEvent from './lib/KeyEvent';
 import PhaserTester from './lib/PhaserTester';
+import { KeyCodes } from './lib/TestConstants';
 
 chai.use(sinonChai);
 const expect = chai.expect;
@@ -59,30 +60,30 @@ describe('Player', () => {
 
     it('should be able to move left', async () => {
         phaserTester.keyDown = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(37);
+            expect(e.keyCode).to.equal(KeyCodes.LEFT_ARROW);
         });
         window.addEventListener('keydown', phaserTester.keyDown);
         expect(player.x).to.be.equal(0);
-        KeyEvent.dispatchKeyDown(37);
+        KeyEvent.dispatchKeyDown(KeyCodes.LEFT_ARROW);
         expect(phaserTester.keyDown).to.have.been.calledOnce;
         await phaserTester.delay(500);
         expect(player.x).to.be.lessThan(0);
         // Cleanup
-        KeyEvent.dispatchKeyUp(37);
+        KeyEvent.dispatchKeyUp(KeyCodes.LEFT_ARROW);
     });
 
     it('should be able to move right', async () => {
         phaserTester.keyDown = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(39);
+            expect(e.keyCode).to.equal(KeyCodes.RIGHT_ARROW);
         });
         window.addEventListener('keydown', phaserTester.keyDown);
         expect(player.x).to.be.equal(0);
-        KeyEvent.dispatchKeyDown(39);
+        KeyEvent.dispatchKeyDown(KeyCodes.RIGHT_ARROW);
         expect(phaserTester.keyDown).to.have.been.calledOnce;
         await phaserTester.delay(500);
         expect(player.x).to.be.greaterThan(0);
         // Cleanup
-        KeyEvent.dispatchKeyUp(39);
+        KeyEvent.dispatchKeyUp(KeyCodes.RIGHT_ARROW);
     });
 
     it('should be able to fast fall', async () => {
@@ -91,10 +92,10 @@ describe('Player', () => {
         let oldPlayerY: number;
         // Space callbacks
         phaserTester.keyDown = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         phaserTester.keyUp = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         window.addEventListener('keydown', phaserTester.keyDown);
         window.addEventListener('keyup', phaserTester.keyUp);
@@ -105,12 +106,12 @@ describe('Player', () => {
         oldPlayerY = player.y;
         // Condition
         player.y = startPlayerY;
-        KeyEvent.dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(KeyCodes.SPACE_BAR);
         expect(phaserTester.keyDown).to.have.been.calledOnce;
         await phaserTester.delay(2000);
         expect(player.y).to.be.greaterThan(oldPlayerY);
         // Cleanup
-        KeyEvent.dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(KeyCodes.SPACE_BAR);
     });
 
     it('should stick to the ground if they fast fell', async () => {
@@ -119,16 +120,16 @@ describe('Player', () => {
             block.getBounds().top - player.getBounds().height / 2;
         // Space callback
         phaserTester.keyDown = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         phaserTester.keyUp = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         window.addEventListener('keydown', phaserTester.keyDown);
         window.addEventListener('keyup', phaserTester.keyUp);
         // Precondition
         expect(player.y).to.be.lessThan(playerGroundedPos);
-        KeyEvent.dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(KeyCodes.SPACE_BAR);
         expect(phaserTester.keyDown).to.have.been.calledOnce;
         await phaserTester.delay(2000);
         expect(player.y).to.be.equal(playerGroundedPos);
@@ -136,7 +137,7 @@ describe('Player', () => {
         await phaserTester.delay(1000);
         expect(player.y).to.be.equal(playerGroundedPos);
         // Cleanup
-        KeyEvent.dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(KeyCodes.SPACE_BAR);
     });
 
     it('should be able to jump higher if bouncing from fast fall', async () => {
@@ -149,10 +150,10 @@ describe('Player', () => {
         player.setOnJump(playerJumpFunc);
         // Space callbacks
         phaserTester.keyDown = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         phaserTester.keyUp = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         window.addEventListener('keydown', phaserTester.keyDown);
         window.addEventListener('keyup', phaserTester.keyUp);
@@ -163,11 +164,11 @@ describe('Player', () => {
         await phaserTester.delay(1000);
         regularJumpHeight = playerGroundedPos - player.y;
         // Condition
-        KeyEvent.dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(KeyCodes.SPACE_BAR);
         expect(phaserTester.keyDown).to.have.been.calledOnce;
         await phaserTester.waitForGameEvent('grounded');
         expect(player.y).to.be.equal(playerGroundedPos);
-        KeyEvent.dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(KeyCodes.SPACE_BAR);
         expect(phaserTester.keyUp).to.have.been.calledOnce;
         await phaserTester.delay(1000);
         expect(playerGroundedPos - player.y).to.be.greaterThan(
@@ -181,20 +182,20 @@ describe('Player', () => {
             block.getBounds().top - player.getBounds().height / 2;
         // Space callbacks
         phaserTester.keyDown = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         phaserTester.keyUp = stub().callsFake(function (e: KeyboardEvent) {
-            expect(e.keyCode).to.equal(32);
+            expect(e.keyCode).to.equal(KeyCodes.SPACE_BAR);
         });
         window.addEventListener('keydown', phaserTester.keyDown);
         window.addEventListener('keyup', phaserTester.keyUp);
         // Precondition
         player.y = -100;
-        KeyEvent.dispatchKeyDown(32);
+        KeyEvent.dispatchKeyDown(KeyCodes.SPACE_BAR);
         expect(phaserTester.keyDown).to.have.been.calledOnce;
         await phaserTester.waitForGameEvent('grounded');
         expect(player.y).to.be.equal(playerGroundedPos);
-        KeyEvent.dispatchKeyUp(32);
+        KeyEvent.dispatchKeyUp(KeyCodes.SPACE_BAR);
         expect(phaserTester.keyUp).to.have.been.calledOnce;
         // Ensure player has jumped before waiting to see if it grounded again
         await phaserTester.waitForGameEvent('jump');

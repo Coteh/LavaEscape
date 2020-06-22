@@ -10,6 +10,7 @@ import PhaserTester from './lib/PhaserTester';
 import { Block } from '../src/gameobjects/Block';
 import { Player } from '../src/gameobjects/Player';
 import KeyEvent from './lib/KeyEvent';
+import { KeyCodes } from './lib/TestConstants';
 
 chai.use(sinonChai);
 
@@ -71,10 +72,10 @@ describe('Platform', () => {
             phaserTester.keyDown = stub().callsFake(function (
                 e: KeyboardEvent
             ) {
-                expect(e.keyCode).to.equal(37);
+                expect(e.keyCode).to.equal(KeyCodes.LEFT_ARROW);
             });
             window.addEventListener('keydown', phaserTester.keyDown);
-            KeyEvent.dispatchKeyDown(37);
+            KeyEvent.dispatchKeyDown(KeyCodes.LEFT_ARROW);
             // Wait half a second
             await phaserTester.delay(500);
             // Precondition: Player is still above the first block
@@ -84,7 +85,7 @@ describe('Platform', () => {
             // Condition: Jump was not called after player went left
             expect(jumpStub).to.not.be.called;
             // Cleanup
-            KeyEvent.dispatchKeyUp(37);
+            KeyEvent.dispatchKeyUp(KeyCodes.LEFT_ARROW);
         });
 
         it('should not allow player to jump if player moves past it from the bottom', async () => {
