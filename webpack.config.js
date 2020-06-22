@@ -17,7 +17,14 @@ module.exports = (env) => {
             rules: [
                 {
                     test: /\.ts$/,
-                    loader: 'ts-loader',
+                    use: [
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                onlyCompileBundledFiles: true,
+                            },
+                        },
+                    ],
                     exclude: '/node_modules/',
                 },
             ],
