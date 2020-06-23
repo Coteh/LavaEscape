@@ -159,7 +159,7 @@ describe('Platform', () => {
             // Create block
             block = scene.createBlock(
                 'moving',
-                // TODO fix Block's bounds checking
+                // TODO(#46) fix Block's bounds checking
                 // so that it checks for game width instead of hardcoded value
                 phaserTester.getGameWidth() - 200,
                 400
