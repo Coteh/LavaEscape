@@ -1,7 +1,6 @@
 import { Lava } from '../../src/gameobjects/Lava';
 import { GameObjects } from 'phaser';
 import { Player } from '../../src/gameobjects/Player';
-import { createSinonStubInstance } from '../lib/SinonStubHelpers';
 
 export class LavaScene extends Phaser.Scene {
     private lava: Lava;
