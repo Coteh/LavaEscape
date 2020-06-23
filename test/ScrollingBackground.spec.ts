@@ -31,15 +31,13 @@ describe('ScrollingBackground', () => {
         // Take a bit for background to calibrate
         await phaserTester.delay(500);
         // Get old background position for comparison
-        let oldBackgroundY: number = background.getActiveBackgroundY();
+        let oldBackgroundY: number = background.getBackgroundY();
         // Move player a bit
         playerMock.y -= 200; // using implementation's slowness factor, it can be calculated that this will move bg down by 2 units
         // Wait a bit so bg can update
         await phaserTester.delay(1000);
         // Condition: Background moved down in response to player moving up
-        expect(background.getActiveBackgroundY()).to.be.greaterThan(
-            oldBackgroundY
-        );
+        expect(background.getBackgroundY()).to.be.greaterThan(oldBackgroundY);
     });
 
     it('should load a new tile if it scrolled down past threshold', async () => {

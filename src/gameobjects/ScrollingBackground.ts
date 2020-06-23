@@ -24,7 +24,7 @@ export class ScrollingBackground extends Phaser.GameObjects.GameObject {
         return this.backgrounds.length;
     }
 
-    public getActiveBackgroundY(): number {
+    public getBackgroundY(): number {
         return this.backgrounds[this.backgrounds.length - 1].y;
     }
 
