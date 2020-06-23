@@ -13,7 +13,7 @@ export class LavaScene extends Phaser.Scene {
     }
 
     preload(): void {
-        // TODO instead of loading images to elapse time for scene create event to be added,
+        // TODO(#51) instead of loading images to elapse time for scene create event to be added,
         // add mechanism to delay time instead
         this.load.image('background', './assets/img/mountain.jpg');
     }

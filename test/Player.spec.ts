@@ -203,7 +203,7 @@ describe('Player', () => {
         await phaserTester.waitForGameEvent('grounded');
     });
 
-    // TODO either:
+    // TODO(#47) either:
     // - decouple logic these three cases test for from MainScene
     // - create a test for MainScene (not going to be reliable since too much going on there)
     // - remove these test cases

@@ -43,7 +43,7 @@ export class Block extends Phaser.GameObjects.Sprite {
     public update(time: number, delta: number): void {
         var oldX: number = this.x;
         this.x += this.speed;
-        // TODO do not hardcode leftmost and rightmost
+        // TODO(#46) do not hardcode leftmost and rightmost
         var blockBounds = getManualBounds(this);
         if (this.speed != 0) {
             if (this.x - blockBounds.width / 2 < -100) {
