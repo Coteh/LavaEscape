@@ -4,10 +4,11 @@ var phaser = path.join(pathToPhaser, 'dist/phaser.js');
 var webpack = require('webpack');
 
 module.exports = (env) => {
-    var isDebug = env && env.NODE_ENV === 'dev';
+    var isDebug = env && (env.NODE_ENV === 'dev' || env.NODE_ENV === 'test');
 
     return {
-        entry: './src/game.ts',
+        entry:
+            env && env.NODE_ENV === 'test' ? './test/test.ts' : './src/game.ts',
         output: {
             path: path.resolve(__dirname, 'dist'),
             filename: 'bundle.js',
@@ -16,7 +17,14 @@ module.exports = (env) => {
             rules: [
                 {
                     test: /\.ts$/,
-                    loader: 'ts-loader',
+                    use: [
+                        {
+                            loader: 'ts-loader',
+                            options: {
+                                onlyCompileBundledFiles: true,
+                            },
+                        },
+                    ],
                     exclude: '/node_modules/',
                 },
             ],
@@ -37,6 +45,7 @@ module.exports = (env) => {
         plugins: [
             new webpack.DefinePlugin({
                 'process.env.IS_DEBUG': JSON.stringify(isDebug),
+                TEST_SCENE: `\"${env.TEST_SCENE}\"`,
             }),
         ],
     };
