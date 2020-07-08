@@ -9,7 +9,7 @@
     "private": true,
     "license": "MIT",
     "author": "James Cote (Coteh)",
-    "main": "index.js",
+    "main": "src/game.ts",
     "scripts": {
         "dev": "webpack-dev-server --env.NODE_ENV=dev",
         "dev-test": "webpack-dev-server --env.NODE_ENV=test --env.TEST_SCENE=$TEST_SCENE",
