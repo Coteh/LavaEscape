@@ -6,7 +6,7 @@
         "type": "git",
         "url": "https://github.com/Coteh/LavaEscape.git"
     },
-    "main": "index.js",
+    "main": "src/game.ts",
     "scripts": {
         "dev": "webpack-dev-server --env.NODE_ENV=dev",
         "prod": "webpack --mode=production",
@@ -14,7 +14,8 @@
         "format": "prettier --config ./.prettierrc.json --write ."
     },
     "author": "James Cote (Coteh)",
-    "license": "ISC",
+    "private": true,
+    "license": "MIT",
     "devDependencies": {
         "expose-loader": "0.7.5",
         "prettier": "2.0.5",
@@ -22,7 +23,7 @@
         "typescript": "3.9.5",
         "webpack": "4.35.2",
         "webpack-cli": "3.3.5",
-        "webpack-dev-server": "3.7.2"
+        "webpack-dev-server": "^3.11.0"
     },
     "dependencies": {
         "phaser": "^3.20.1"
