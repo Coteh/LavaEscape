@@ -19,7 +19,7 @@
     "devDependencies": {
         "expose-loader": "0.7.5",
         "prettier": "2.0.5",
-        "ts-loader": "6.0.4",
+        "ts-loader": "8.0.11",
         "typescript": "3.9.5",
         "webpack": "4.35.2",
         "webpack-cli": "3.3.5",
