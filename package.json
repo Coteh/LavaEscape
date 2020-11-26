@@ -17,7 +17,7 @@
     "private": true,
     "license": "MIT",
     "devDependencies": {
-        "expose-loader": "0.7.5",
+        "expose-loader": "1.0.2",
         "prettier": "2.0.5",
         "ts-loader": "6.0.4",
         "typescript": "3.9.5",
