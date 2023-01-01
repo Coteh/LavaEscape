@@ -19,13 +19,13 @@
     "devDependencies": {
         "expose-loader": "0.7.5",
         "prettier": "2.0.5",
-        "ts-loader": "6.0.4",
+        "ts-loader": "9.4.2",
         "typescript": "3.9.5",
-        "webpack": "4.35.2",
-        "webpack-cli": "3.3.5",
+        "webpack": "5.75.0",
+        "webpack-cli": "5.0.1",
         "webpack-dev-server": "^3.11.0"
     },
     "dependencies": {
-        "phaser": "^3.20.1"
+        "phaser": "^3.55.2"
     }
 }
