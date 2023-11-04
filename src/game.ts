@@ -10,9 +10,9 @@ class LavaEscapeGame extends Phaser.Game {
     }
 }
 
-var scenes: Function[] = [TitleScene, MainScene, HUDScene];
+var scenes: typeof Phaser.Scene[] = [TitleScene, MainScene, HUDScene];
 
-if (process.env.IS_DEBUG) {
+if (IS_DEBUG) {
     scenes.push(DebugScene);
 }
 

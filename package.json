@@ -8,8 +8,8 @@
     },
     "main": "src/game.ts",
     "scripts": {
-        "dev": "webpack-dev-server --env.NODE_ENV=dev",
-        "prod": "webpack --mode=production",
+        "dev": "webpack-dev-server --env NODE_ENV=dev",
+        "build": "webpack --mode=production",
         "test": "echo \"Error: no test specified\" && exit 1",
         "format": "prettier --config ./.prettierrc.json --write ."
     },
@@ -17,15 +17,15 @@
     "private": true,
     "license": "MIT",
     "devDependencies": {
-        "expose-loader": "0.7.5",
+        "copy-webpack-plugin": "11.0.0",
         "prettier": "2.0.5",
-        "ts-loader": "6.0.4",
-        "typescript": "3.9.5",
-        "webpack": "4.35.2",
-        "webpack-cli": "3.3.5",
-        "webpack-dev-server": "^3.11.0"
+        "ts-loader": "9.5.0",
+        "typescript": "5.2.2",
+        "webpack": "5.88.2",
+        "webpack-cli": "5.1.4",
+        "webpack-dev-server": "4.15.1"
     },
     "dependencies": {
-        "phaser": "^3.20.1"
+        "phaser": "^3.60.0"
     }
 }

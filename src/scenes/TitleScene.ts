@@ -48,8 +48,7 @@ export class TitleScene extends Phaser.Scene {
                 color: '#fff',
             }
         );
-        const versionNumber = 'v0.1.0';
-        this.add.text(this.cameras.main.width - 72, 16, versionNumber, {
+        this.add.text(this.cameras.main.width - 72, 16, `v${GAME_VERSION}`, {
             color: '#fff',
         });
         var lava = new Lava(this, 800, 500, null);

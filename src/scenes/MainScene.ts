@@ -73,7 +73,7 @@ export class MainScene extends Phaser.Scene {
             ['RIGHT', this.input.keyboard.addKey('RIGHT')],
             ['SPACE', this.input.keyboard.addKey('SPACE')],
         ]);
-        if (process.env.IS_DEBUG) {
+        if (IS_DEBUG) {
             this.keys.set('D', this.input.keyboard.addKey('D'));
         }
         // TODO add loading screen
