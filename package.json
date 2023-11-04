@@ -1,6 +1,6 @@
 {
     "name": "lava-escape",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "description": "Jump game made using Phaser 3 and TypeScript",
     "repository": {
         "type": "git",
