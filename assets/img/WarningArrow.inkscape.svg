@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
+   version="1.1"
+   id="svg1"
+   inkscape:export-filename="WarningArrow.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
+   inkscape:version="1.3 (0e150ed, 2023-07-21)"
+   sodipodi:docname="WarningArrow.inkscape.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="mm"
+     inkscape:zoom="2"
+     inkscape:cx="311.75"
+     inkscape:cy="497.25"
+     inkscape:window-width="1920"
+     inkscape:window-height="982"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="layer2" />
+  <defs
+     id="defs1" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer2"
+     inkscape:label="Yellow"
+     inkscape:export-filename="WarningArrow_flash.png"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96"
+     style="display:inline">
+    <g
+       id="g2"
+       transform="matrix(1.0762871,0,0,1.0762871,-7.868442,-7.2065644)"
+       style="fill:#ffff00">
+      <path
+         style="fill:#ffff00;stroke-width:0.264583"
+         d="M 103.19491,75.508473 V 171.15254 H 20.135593 Z"
+         id="path1-0" />
+      <path
+         style="fill:#ffff00;stroke-width:0.264583"
+         d="m 102.8198,75.509189 v 95.644061 h 83.05932 z"
+         id="path1-8-3" />
+    </g>
+  </g>
+  <g
+     inkscape:label="Orange"
+     inkscape:groupmode="layer"
+     id="layer1"
+     style="display:inline">
+    <g
+       id="g1"
+       transform="translate(0.37417734,2.997313)">
+      <path
+         style="fill:#ff6600;stroke-width:0.264583"
+         d="M 103.19491,75.508473 V 171.15254 H 20.135593 Z"
+         id="path1" />
+      <path
+         style="fill:#ff6600;stroke-width:0.264583"
+         d="m 102.8198,75.509189 v 95.644061 h 83.05932 z"
+         id="path1-8" />
+    </g>
+  </g>
+  <g
+     inkscape:label="Red"
+     inkscape:groupmode="layer"
+     id="g4"
+     style="display:inline;fill:#ff0000"
+     inkscape:export-filename="WarningArrow_flash.png"
+     inkscape:export-xdpi="96"
+     inkscape:export-ydpi="96">
+    <g
+       id="g3"
+       transform="translate(0.37417734,2.997313)"
+       style="fill:#ff0000">
+      <path
+         style="fill:#ff0000;stroke-width:0.264583"
+         d="M 103.19491,75.508473 V 171.15254 H 20.135593 Z"
+         id="path2" />
+      <path
+         style="fill:#ff0000;stroke-width:0.264583"
+         d="m 102.8198,75.509189 v 95.644061 h 83.05932 z"
+         id="path3" />
+    </g>
+  </g>
+</svg>

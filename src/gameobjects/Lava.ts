@@ -12,6 +12,8 @@ export class Lava extends Phaser.GameObjects.Rectangle {
     private gameOver: boolean;
     private timeToInactive: number = 0;
 
+    private prevPlayerLava: number = 0;
+
     constructor(
         scene: Phaser.Scene,
         y: number,
@@ -31,6 +33,13 @@ export class Lava extends Phaser.GameObjects.Rectangle {
         }
         var playerLava = this.y - this.player.y;
         this.scene.events.emit('debug', 'playerlava', playerLava.toString());
+        // If the distance between player and lava (playerLava) is within screen threshold, then show the warning indicators on the game UI
+        const lavaWarn =
+            playerLava - this.prevPlayerLava < 0 &&
+            playerLava > 600 &&
+            playerLava < 800;
+        this.scene.events.emit('debug', 'lavaWarn', lavaWarn);
+        this.scene.events.emit('lavaWarn', lavaWarn, playerLava);
         var lavaSpeed = this.movingDown
             ? this.lavaReductionSpeed
             : Math.abs(playerLava / this.lavaForgiveness);
@@ -44,6 +53,7 @@ export class Lava extends Phaser.GameObjects.Rectangle {
         if (this.y > this.movingDownDist) {
             this.movingDown = false;
         }
+        this.prevPlayerLava = playerLava;
     }
 
     public speedUp(factor: number) {
