@@ -1,3 +1,7 @@
+import { Player } from '../gameobjects/Player';
+import { Block } from '../gameobjects/Block';
+import { getManualBounds } from './Bounds';
+
 export namespace CollideFuncs {
     export function hitTop(
         playerBounds: Phaser.Geom.Rectangle,
@@ -25,5 +29,16 @@ export namespace CollideFuncs {
             playerBounds.y > otherBounds.y - otherBounds.width / 2 &&
             playerBounds.y < otherBounds.y + otherBounds.width / 2
         );
+    }
+
+    export function resolvePlayerBlockCollision(
+        player: Player,
+        block: Block
+    ): void {
+        player.setGrounded(true);
+        var blockBounds = getManualBounds(block);
+        var playerBounds = getManualBounds(player);
+        player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
+        block.executeBlockHitEffect();
     }
 }

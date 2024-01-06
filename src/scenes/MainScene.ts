@@ -160,11 +160,7 @@ export class MainScene extends Phaser.Scene {
     }
 
     onPlatformHit(player: Player, block: Block): void {
-        player.setGrounded(true);
-        var blockBounds = getManualBounds(block);
-        var playerBounds = getManualBounds(player);
-        player.y = block.y - blockBounds.height / 2 - playerBounds.height / 2;
-        block.executeBlockHitEffect();
+        CollideFuncs.resolvePlayerBlockCollision(player, block);
         this.numberOfBlocksHit++;
         if (
             this.numberOfBlocksHit > 10 &&

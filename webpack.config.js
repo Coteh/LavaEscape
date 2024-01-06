@@ -5,9 +5,10 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => {
     const isDev = env.NODE_ENV === 'dev';
+    const isTest = env.NODE_ENV === 'test';
 
     return {
-        entry: './src/game.ts',
+        entry: isTest ? './test/test.ts' : './src/game.ts',
         mode: isDev ? 'development' : 'production',
         output: {
             path: path.resolve(__dirname, 'dist'),
@@ -47,6 +48,7 @@ module.exports = (env) => {
             new webpack.DefinePlugin({
                 IS_DEBUG: JSON.stringify(isDev),
                 GAME_VERSION: JSON.stringify(package.version),
+                TEST_SCENE: `\"${env.TEST_SCENE}\"`, // TODO: only define this in test
             }),
             new CopyWebpackPlugin({
                 patterns: [

@@ -6,26 +6,46 @@
         "type": "git",
         "url": "https://github.com/Coteh/LavaEscape.git"
     },
+    "private": true,
+    "license": "MIT",
+    "author": "James Cote (Coteh)",
     "main": "src/game.ts",
     "scripts": {
         "dev": "webpack-dev-server --env NODE_ENV=dev",
+        "dev-test": "webpack-dev-server --env NODE_ENV=test --env TEST_SCENE=$TEST_SCENE",
         "build": "webpack --mode=production",
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "format": "prettier --config ./.prettierrc.json --write ."
+        "test": "./scripts/test",
+        "format": "prettier --config ./.prettierrc.json --write .",
+        "test-view": "./scripts/test view"
     },
-    "author": "James Cote (Coteh)",
-    "private": true,
-    "license": "MIT",
+    "dependencies": {
+        "phaser": "^3.60.0"
+    },
     "devDependencies": {
+        "@types/chai": "^4.1.7",
+        "@types/mocha": "^5.2.6",
+        "@types/sinon": "^7.5.1",
+        "@types/sinon-chai": "^3.2.3",
+        "chai": "^4.2.0",
         "copy-webpack-plugin": "11.0.0",
+        "karma": "^5.1.0",
+        "karma-chai": "^0.1.0",
+        "karma-chrome-launcher": "^3.1.0",
+        "karma-junit-reporter": "^1.2.0",
+        "karma-mocha": "^2.0.1",
+        "karma-sinon-chai": "^2.0.2",
+        "karma-spec-reporter": "0.0.32",
+        "karma-typescript": "^5.0.3",
+        "mocha": "^7.0.0",
         "prettier": "2.0.5",
+        "puppeteer": "^3.3.0",
+        "sinon": "^7.3.1",
+        "sinon-chai": "^3.5.0",
         "ts-loader": "9.5.0",
+        "ts-mocha": "^7.0.0",
         "typescript": "5.2.2",
         "webpack": "5.88.2",
         "webpack-cli": "5.1.4",
         "webpack-dev-server": "4.15.1"
-    },
-    "dependencies": {
-        "phaser": "^3.60.0"
     }
 }
