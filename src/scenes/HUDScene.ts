@@ -226,6 +226,7 @@ export class HUDScene extends Phaser.Scene {
         this.resumeButton.setVisible(true);
         this.pausedText.setVisible(true);
         this.spaceKeyImage.setVisible(false);
+        this.anims.get('lava_warn_animation').pause();
     }
 
     resumeGame(): void {
@@ -233,6 +234,7 @@ export class HUDScene extends Phaser.Scene {
         this.resumeButton.setVisible(false);
         this.pausedText.setVisible(false);
         this.spaceKeyImage.setVisible(this.elapsedSpaceTutorial > 0);
+        this.anims.get('lava_warn_animation').resume();
     }
 
     restartGame(): void {
