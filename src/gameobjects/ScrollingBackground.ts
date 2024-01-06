@@ -20,14 +20,6 @@ export class ScrollingBackground extends Phaser.GameObjects.GameObject {
         this.addBackground(backgroundOffset);
     }
 
-    public getNumberOfBackgroundTiles(): number {
-        return this.backgrounds.length;
-    }
-
-    public getBackgroundY(): number {
-        return this.backgrounds[this.backgrounds.length - 1].y;
-    }
-
     private addBackground(offset: number): void {
         var background = this.scene.add.image(0, offset, this.imageName);
         background.setScrollFactor(0);
