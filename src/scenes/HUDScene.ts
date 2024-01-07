@@ -1,4 +1,5 @@
 import { BaseButton } from '../gameobjects/buttons/BaseButton';
+import { GameManager } from '../managers/GameManager';
 
 const GAME_OVER_SCREEN_OFFSET: number = -50;
 const MAX_SPACE_TUTORIAL_DURATION: number = 5000;
@@ -6,13 +7,13 @@ const MAX_LAVA_WARN_COOLDOWN_MS: number = 5000;
 
 export class HUDScene extends Phaser.Scene {
     private mainScene: Phaser.Scene;
+    private gameManager: GameManager;
 
     private scoreText: Phaser.GameObjects.Text;
     private highscoreText: Phaser.GameObjects.Text;
     private score: number;
     private highscore: number = 0;
     private displayScore: number;
-    private isGameOver: boolean;
 
     private pKey: Phaser.Input.Keyboard.Key;
 
@@ -168,6 +169,8 @@ export class HUDScene extends Phaser.Scene {
 
         this.add.existing(this.lavaWarnUI);
         this.lavaWarnUI.setVisible(false);
+
+        this.gameManager = this.registry.get('gameManager');
     }
 
     updateScore(): void {
@@ -177,7 +180,7 @@ export class HUDScene extends Phaser.Scene {
     update(time: number, delta: number): void {
         if (
             this.input.keyboard.checkDown(this.pKey, 1000) &&
-            !this.isGameOver
+            !this.gameManager.isGameOver()
         ) {
             if (!this.scene.isPaused('MainScene')) {
                 this.pauseGame();
@@ -223,7 +226,6 @@ export class HUDScene extends Phaser.Scene {
             this.beatHighscoreText.setVisible(true);
         }
         this.spaceKeyImage.setVisible(false);
-        this.isGameOver = true;
     }
 
     pauseGame(): void {
@@ -245,7 +247,6 @@ export class HUDScene extends Phaser.Scene {
     restartGame(): void {
         this.scene.start('MainScene');
         this.anims.get('lava_warn_animation').resume();
-        this.isGameOver = false;
     }
 
     activateSpaceTutorial(): void {
