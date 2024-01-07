@@ -12,6 +12,7 @@ export class HUDScene extends Phaser.Scene {
     private score: number;
     private highscore: number = 0;
     private displayScore: number;
+    private isGameOver: boolean;
 
     private pKey: Phaser.Input.Keyboard.Key;
 
@@ -174,7 +175,10 @@ export class HUDScene extends Phaser.Scene {
     }
 
     update(time: number, delta: number): void {
-        if (this.input.keyboard.checkDown(this.pKey, 1000)) {
+        if (
+            this.input.keyboard.checkDown(this.pKey, 1000) &&
+            !this.isGameOver
+        ) {
             if (!this.scene.isPaused('MainScene')) {
                 this.pauseGame();
             } else {
@@ -219,6 +223,7 @@ export class HUDScene extends Phaser.Scene {
             this.beatHighscoreText.setVisible(true);
         }
         this.spaceKeyImage.setVisible(false);
+        this.isGameOver = true;
     }
 
     pauseGame(): void {
@@ -239,6 +244,8 @@ export class HUDScene extends Phaser.Scene {
 
     restartGame(): void {
         this.scene.start('MainScene');
+        this.anims.get('lava_warn_animation').resume();
+        this.isGameOver = false;
     }
 
     activateSpaceTutorial(): void {
