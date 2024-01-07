@@ -1,0 +1,50 @@
+name: Deploy to GitHub Pages
+
+on:
+    # Runs on pushes targeting tags
+    push:
+        tags:
+            - 'v*' # Trigger on tags that start with 'v'
+    # Allow the ability to run this workflow manually from the Actions tab
+    workflow_dispatch:
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+    contents: read # read contents of repository
+    pages: write # to deploy to Pages
+    id-token: write # to verify the deployment originates from an appropriate source
+
+# Ensure that GitHub Actions only runs one deployment at a time by making all jobs that run from this workflow part of the "pages" concurrency group.
+# GitHub Actions will only run one job per concurrency group at a time.
+# Don't cancel any runs that are in progress though, as the deployment should be run to completion.
+concurrency:
+    group: 'pages'
+    cancel-in-progress: false
+
+jobs:
+    deploy:
+        environment:
+            name: github-pages
+            url: ${{ steps.deployment.outputs.page_url }}
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            - name: Set up Node.js
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20
+            - name: Install dependencies
+              run: npm install
+            - name: Build
+              run: npm run build
+            - name: Setup Pages
+              uses: actions/configure-pages@v4
+            - name: Upload artifact
+              uses: actions/upload-pages-artifact@v3
+              with:
+                  # Upload just the 'dist' directory
+                  path: './dist'
+            - name: Deploy to GitHub Pages
+              id: deployment
+              uses: actions/deploy-pages@v4
