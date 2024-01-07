@@ -8,6 +8,7 @@ const MAX_LAVA_WARN_COOLDOWN_MS: number = 5000;
 export class HUDScene extends Phaser.Scene {
     private mainScene: Phaser.Scene;
     private gameManager: GameManager;
+    private hasLaunchedFirstTime: boolean = false;
 
     private scoreText: Phaser.GameObjects.Text;
     private highscoreText: Phaser.GameObjects.Text;
@@ -171,6 +172,20 @@ export class HUDScene extends Phaser.Scene {
         this.lavaWarnUI.setVisible(false);
 
         this.gameManager = this.registry.get('gameManager');
+
+        if (!this.hasLaunchedFirstTime) {
+            document.addEventListener('visibilitychange', () => {
+                if (
+                    document.visibilityState === 'hidden' &&
+                    !this.gameManager.isGameOver()
+                ) {
+                    if (!this.scene.isPaused('MainScene')) {
+                        this.pauseGame();
+                    }
+                }
+            });
+        }
+        this.hasLaunchedFirstTime = true;
     }
 
     updateScore(): void {
