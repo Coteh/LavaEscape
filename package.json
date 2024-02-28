@@ -17,7 +17,7 @@
     "format": "prettier --config ./.prettierrc.json --write ."
   },
   "dependencies": {
-    "phaser": "^3.60.0"
+    "phaser": "^3.80.1"
   },
   "devDependencies": {
     "copy-webpack-plugin": "11.0.0",
