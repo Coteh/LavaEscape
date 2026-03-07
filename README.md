@@ -24,9 +24,11 @@ A jump game made using Phaser 3 and TypeScript.
 
 ## Setup
 
+First, [pnpm](https://pnpm.io/) will need to be installed.
+
 1. Clone the repository by running `git clone https://github.com/Coteh/LavaEscape.git`
-1. Run in development mode (with debug mode enabled) by running `npm run dev`
-1. To build for production, run `npm run prod` and then serve a HTTP server from the project root
+1. Run in development mode (with debug mode enabled) by running `pnpm run dev`
+1. To build for production, run `pnpm run prod` and then serve a HTTP server from the project root
 
 ## Limitations
 
