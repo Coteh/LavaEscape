@@ -24,12 +24,18 @@ export class DebugScene extends Phaser.Scene {
         this.debugManager.addKey('playerX');
         this.debugManager.addKey('playerY');
         this.debugManager.addKey('mana');
+        this.debugManager.addKey('score');
         this.debugManager.addKey('highscore');
+        this.debugManager.addKey('scoreUpdateSpeed');
         mainScene.events.on('debug', (key, value) => {
             this.debugManager.setText(key, value);
         });
         mainScene.events.on('debugToggle', () => {
             this.debugManager.toggleVisibility();
+        });
+        mainScene.events.on('updateScore', () => {
+            const score = this.registry.get('score');
+            this.debugManager.setText('score', score.toString());
         });
         this.events.on('shutdown', () => {
             mainScene.events.removeAllListeners('debug');

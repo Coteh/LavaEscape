@@ -4,6 +4,7 @@ import { GameManager } from '../managers/GameManager';
 const GAME_OVER_SCREEN_OFFSET: number = -50;
 const MAX_SPACE_TUTORIAL_DURATION: number = 5000;
 const MAX_LAVA_WARN_COOLDOWN_MS: number = 5000;
+const MIN_SCORE_UPDATE_SPEED: number = 10;
 
 export class HUDScene extends Phaser.Scene {
     private mainScene: Phaser.Scene;
@@ -15,6 +16,7 @@ export class HUDScene extends Phaser.Scene {
     private score: number;
     private highscore: number = 0;
     private displayScore: number;
+    private scoreUpdateSpeed: number = MIN_SCORE_UPDATE_SPEED;
 
     private pKey: Phaser.Input.Keyboard.Key;
 
@@ -186,6 +188,12 @@ export class HUDScene extends Phaser.Scene {
             });
         }
         this.hasLaunchedFirstTime = true;
+
+        this.mainScene.events.emit(
+            'debug',
+            'scoreUpdateSpeed',
+            this.scoreUpdateSpeed.toString()
+        );
     }
 
     updateScore(): void {
@@ -204,13 +212,32 @@ export class HUDScene extends Phaser.Scene {
             }
         }
 
-        if (this.displayScore < this.score / 2) {
-            this.displayScore = Math.ceil(this.score / 2);
-        } else if (this.displayScore < this.score) {
-            this.displayScore =
-                this.score - this.displayScore === 1
-                    ? this.displayScore + 1
-                    : this.displayScore + 2;
+        // The UI score is an interpolation between the previous UI score value and the player's actual score, and it increments every game step.
+        // If the discrepancy between the real score and the display score is large enough, it'll increment quicker.
+        // Once the display score matches the real score, the score's update speed will reset back to the default speed.
+        const newScoreUpdateSpeed = Math.max(
+            MIN_SCORE_UPDATE_SPEED,
+            Math.floor((this.score - this.displayScore) / 100)
+        );
+        if (newScoreUpdateSpeed > this.scoreUpdateSpeed) {
+            this.scoreUpdateSpeed = newScoreUpdateSpeed;
+            this.mainScene.events.emit(
+                'debug',
+                'scoreUpdateSpeed',
+                this.scoreUpdateSpeed.toString()
+            );
+        }
+        this.displayScore = Math.min(
+            this.score,
+            this.displayScore + this.scoreUpdateSpeed
+        );
+        if (this.displayScore === this.score) {
+            this.scoreUpdateSpeed = MIN_SCORE_UPDATE_SPEED;
+            this.mainScene.events.emit(
+                'debug',
+                'scoreUpdateSpeed',
+                this.scoreUpdateSpeed.toString()
+            );
         }
         this.scoreText.setText(this.displayScore.toString());
         if (
