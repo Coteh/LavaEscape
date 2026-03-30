@@ -211,7 +211,9 @@ export class MainScene extends Phaser.Scene {
         this.blockChunks.forEach((blockChunk) => {
             blockChunk.blocks.forEach((block) => {
                 if (block.active) {
-                    block.update(time, delta);
+                    if (!this.gameManager.isGameOver()) {
+                        block.update(time, delta);
+                    }
                     if (block.hasPlayerGrounded()) {
                         playerGrounded = true;
                     }
@@ -227,7 +229,7 @@ export class MainScene extends Phaser.Scene {
             blockChunkIndex++;
         });
         // If the player is not currently on any block, then unground them
-        if (!playerGrounded) {
+        if (!playerGrounded && !this.gameManager.isGameOver()) {
             this.player.setGrounded(false);
         }
         // Cull old block chunks
